@@ -26,16 +26,16 @@ jobs:
         with:
           node-version: 18
           cache: "npm"
-          cache-dependency-path: "./FrontEnd/package-lock.json"
+          cache-dependency-path: "./FrondEnd/package-lock.json"
 
       - name: Install dependencies
         run: npm install
-        working-directory: ./FrontEnd # Adjusted to correct folder structure
+        working-directory: ./FrondEnd # Adjusted to correct folder structure
 
       - name: Build project
         run: npm run build
-        working-directory: ./FrontEnd
+        working-directory: ./FrondEnd
 
       - name: Run linting
         run: npm run lint
-        working-directory: ./FrontEnd 
+        working-directory: ./FrondEnd 
