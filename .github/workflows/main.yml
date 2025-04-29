@@ -30,7 +30,7 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-        working-directory: ./Frontend # Adjusted to correct folder structure
+        working-directory: ./FrontEnd # Adjusted to correct folder structure
 
       - name: Build project
         run: npm run build
