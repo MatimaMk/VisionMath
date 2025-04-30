@@ -15,5 +15,6 @@ public static class visionMathDbContextConfigurer
     {
        // builder.UseSqlServer(connection);
         builder.UseNpgsql(connection);
+        
     }
 }
