@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Abp.Domain.Entities.Auditing;
 
 namespace visionMath.Domain.Resources
@@ -11,5 +12,7 @@ namespace visionMath.Domain.Resources
         public TimeSpan EstimatedTime { get; set; }
         public virtual ReflistTopicDiffStatus? DifficultLevel { get; set; }
 
-    }
+        public virtual ICollection<Content> Contents  { get; set; }
+
+}
 }
