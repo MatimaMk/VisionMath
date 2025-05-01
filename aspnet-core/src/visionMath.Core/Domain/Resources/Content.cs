@@ -14,7 +14,7 @@ namespace visionMath.Domain.Resources
         [Required]
         public string ContentDescription { get; set; }
         [Required]
-        public virtual ContentType? ContentType { get; set; }
+        public virtual ReflistContentType? ContentType { get; set; }
         public string TextContent { get; set; }
         // Sequence position
         public int OrderNumber { get; set; }
