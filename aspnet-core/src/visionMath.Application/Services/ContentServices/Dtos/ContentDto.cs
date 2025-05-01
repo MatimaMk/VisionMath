@@ -18,7 +18,7 @@ namespace visionMath.Services.ContentServices.Dtos
 
         public string ContentDescription { get; set; }
 
-        public ContentType? ContentType { get; set; }
+        public ReflistContentType? ContentType { get; set; }
 
         public string TextContent { get; set; }
 
@@ -29,7 +29,7 @@ namespace visionMath.Services.ContentServices.Dtos
         public bool HasPdfFile => !string.IsNullOrEmpty(PdfFilePath);
     }
     [AutoMap(typeof(Content))]
-    public class CreateContentDto
+    public class CreateContentDto 
     {
         [Required]
         [StringLength(256)]
