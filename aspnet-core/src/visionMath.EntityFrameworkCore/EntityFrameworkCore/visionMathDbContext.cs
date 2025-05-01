@@ -6,6 +6,7 @@ using visionMath.Authorization.Roles;
 using visionMath.Authorization.Users;
 using visionMath.Domain.Resources;
 using visionMath.MultiTenancy;
+using visionMath.Domain.ProgressResources;
 
 namespace visionMath.EntityFrameworkCore;
 
@@ -13,6 +14,13 @@ public class visionMathDbContext : AbpZeroDbContext<Tenant, Role, User, visionMa
 {
     /* Define a DbSet for each entity of the application */
     public DbSet<Topic> Topics { get; set; }
+    public DbSet<Content> Contents { get; set; }
+    public DbSet<Question> Questions { get; set; }
+    public DbSet<QuestionOption> QuestionOptions { get; set; }
+    public DbSet<Answer> Answers { get; set; }
+    public DbSet<Test> Tests { get; set; }
+
+
 
     public visionMathDbContext(DbContextOptions<visionMathDbContext> options)
         : base(options)
