@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using Abp.Domain.Entities.Auditing;
 using visionMath.Domain.Persons;
 
 namespace visionMath.Domain.ProgressResources
 {
-    public class Progress
+    public class Progress: FullAuditedEntity<Guid>
     {
         public Guid StudentId { get; set; }
         public Student Student { get; set; }
