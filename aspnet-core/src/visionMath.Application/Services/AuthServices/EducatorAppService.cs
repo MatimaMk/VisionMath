@@ -14,20 +14,29 @@ using visionMath.Students.Dto;
 
 namespace visionMath.Services.PersonServices
 {
-    public class EducatorAppService : AsyncCrudAppService<Educator, EducatorResponseDto, Guid, PagedAndSortedResultRequestDto, EducatorRequestDto, EducatorResponseDto>, IEducatorAppService
+    public class EducatorAppService : AsyncCrudAppService<
+        Educator,
+        EducatorResponseDto,
+        Guid,
+        PagedAndSortedResultRequestDto,
+        CreateEducatorDto,
+        UpdateEducatorDto>,
+        IEducatorAppService
     {
         private readonly EducatorManager _educatorManager;
-        private readonly IMapper _mapper;
-        private readonly IRepository<Educator, Guid> _repository;
+        private readonly IRepository<Student, Guid> _studentRepository;
 
-        public EducatorAppService(IRepository<Educator, Guid> repository, EducatorManager educatorManager, IMapper mapper) : base(repository)
+        public EducatorAppService(
+            IRepository<Educator, Guid> repository,
+            EducatorManager educatorManager,
+            IRepository<Student, Guid> studentRepository)
+            : base(repository)
         {
             _educatorManager = educatorManager;
-            _repository = repository;
-            _mapper = mapper;
+            _studentRepository = studentRepository;
         }
 
-        public override async Task<EducatorResponseDto> CreateAsync(EducatorRequestDto input)
+        public override async Task<EducatorResponseDto> CreateAsync(CreateEducatorDto input)
         {
             var educator = await _educatorManager.CreateEducatorAsync(
                 input.FirstName,
@@ -38,26 +47,21 @@ namespace visionMath.Services.PersonServices
                 input.Password,
                 input.HighestQualification,
                 input.YearsOfMathTeaching,
-                input.Biography
-            );
+                input.Biography);
 
-            return _mapper.Map<EducatorResponseDto>(educator);
+            return ObjectMapper.Map<EducatorResponseDto>(educator);
         }
 
         public override async Task<EducatorResponseDto> GetAsync(EntityDto<Guid> input)
         {
-            var educator = await _educatorManager.GetEducatorByIdWithDetailsAsync(input.Id);
-            if (educator == null)
-            {
-                throw new UserFriendlyException("Educator not found");
-            }
-
-            return _mapper.Map<EducatorResponseDto>(educator);
+            var educator = await _educatorManager.GetEducatorWithDetailsAsync(input.Id);
+            return ObjectMapper.Map<EducatorResponseDto>(educator);
         }
 
         public override async Task<PagedResultDto<EducatorResponseDto>> GetAllAsync(PagedAndSortedResultRequestDto input)
         {
-            var query = _educatorManager.GetAllEducatorsAsync();
+            var query = _educatorManager.GetAllEducatorsWithDetails();
+
             var totalCount = await query.CountAsync();
             var educators = await query
                 .Skip(input.SkipCount)
@@ -66,62 +70,34 @@ namespace visionMath.Services.PersonServices
 
             return new PagedResultDto<EducatorResponseDto>(
                 totalCount,
-                _mapper.Map<List<EducatorResponseDto>>(educators)
+                ObjectMapper.Map<List<EducatorResponseDto>>(educators)
             );
         }
 
-        public async Task<EducatorResponseDto> GetCurrentEducatorAsync(long userId)
+        public async Task<ListResultDto<StudentDto>> GetEducatorStudents(Guid educatorId)
         {
-            var educator = await _educatorManager.GetEducatorByUserIdAsync(userId);
-            return _mapper.Map<Educator, EducatorResponseDto>(educator);
-        }
+            var students = await _studentRepository.GetAll()
+                .Where(s => s.EducatorId == educatorId)
+                .Include(s => s.User)
+                .ToListAsync();
 
-        public async Task<List<StudentDto>> GetEducatorStudentsAsync(Guid educatorId)
-        {
-            var students = await _educatorManager.GetEducatorStudentsAsync(educatorId);
-            return _mapper.Map<List<StudentDto>>(students);
-        }
-
-        public async Task<EducatorResponseDto> UpdateEducatorAsync(UpdateEducatorDto input)
-        {
-            var educator = await _repository.GetAsync(input.Id);
-            if (educator == null)
-                throw new UserFriendlyException("Educator not found");
-
-            var updatedEducator = await _educatorManager.UpdateEducatorAsync(
-                input.Id,
-                input.FirstName,
-                input.Surname,
-                input.EmailAddress,
-                input.PhoneNumber,
-                input.UserName,
-                input.Password,
-                input.HighestQualification,
-                input.YearsOfMathTeaching,
-                input.Biography
+            return new ListResultDto<StudentDto>(
+                ObjectMapper.Map<List<StudentDto>>(students)
             );
-
-            return _mapper.Map<EducatorResponseDto>(updatedEducator);
         }
 
-        public async Task AssignStudentToEducatorAsync(StudentEducatorAssignmentDto input)
+        public async Task AssignStudentsToEducator(Guid educatorId, List<Guid> studentIds)
         {
-            await _educatorManager.AssignStudentToEducatorAsync(input.StudentId, input.EducatorId);
-        }
+            var educator = await _educatorManager.GetEducatorWithDetailsAsync(educatorId);
+            var students = await _studentRepository.GetAll()
+                .Where(s => studentIds.Contains(s.Id))
+                .ToListAsync();
 
-        public async Task UnassignStudentFromEducatorAsync(StudentEducatorAssignmentDto input)
-        {
-            await _educatorManager.UnassignStudentFromEducatorAsync(input.StudentId, input.EducatorId);
-        }
-
-        public async Task ReassignStudentsAsync(EducatorReassignmentDto input)
-        {
-            await _educatorManager.ReassignStudentsAsync(input.FromEducatorId, input.ToEducatorId);
-        }
-
-        public async Task<bool> DeleteEducatorAsync(EntityDto<Guid> input)
-        {
-            return await _educatorManager.DeleteEducatorAsync(input.Id);
+            foreach (var student in students)
+            {
+                student.EducatorId = educatorId;
+                await _studentRepository.UpdateAsync(student);
+            }
         }
     }
 }
