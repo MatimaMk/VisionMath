@@ -6,7 +6,7 @@ using visionMath.Domain.Resources;
 namespace visionMath.Services.TopicServices.Dto
 {
     [AutoMap(typeof(Topic))]
-    public class TopicDto : EntityDto
+    public class TopicDto : EntityDto<Guid>
     {
         public string TopicTittle { get; set; }
         public string Description { get; set; }
