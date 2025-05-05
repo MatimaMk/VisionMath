@@ -6,34 +6,39 @@ using visionMath.Students.Dto;
 
 namespace visionMath.Services.PersonServices.Dtos
 {
-    public class EducatorRequestDto
+    public class CreateEducatorDto
     {
         [Required]
+        [StringLength(50)]
         public string FirstName { get; set; }
 
         [Required]
+        [StringLength(50)]
         public string Surname { get; set; }
 
         [Required]
         [EmailAddress]
         public string EmailAddress { get; set; }
 
+        [Phone]
         public string PhoneNumber { get; set; }
 
         [Required]
+        [StringLength(32)]
         public string UserName { get; set; }
 
         [Required]
-        [MinLength(6)]
+        [StringLength(100, MinimumLength = 6)]
         public string Password { get; set; }
 
         [Required]
+        [StringLength(100)]
         public string HighestQualification { get; set; }
 
-        [Required]
-        [Range(0, 100)]
+        [Range(0, 50)]
         public int YearsOfMathTeaching { get; set; }
 
+        [StringLength(500)]
         public string Biography { get; set; }
     }
 
@@ -53,32 +58,31 @@ namespace visionMath.Services.PersonServices.Dtos
 
     public class UpdateEducatorDto : EntityDto<Guid>
     {
+        [StringLength(50)]
         public string FirstName { get; set; }
+
+        [StringLength(50)]
         public string Surname { get; set; }
+
+        [EmailAddress]
         public string EmailAddress { get; set; }
+
+        [Phone]
         public string PhoneNumber { get; set; }
+
+        [StringLength(32)]
         public string UserName { get; set; }
+
+        [StringLength(100, MinimumLength = 6)]
         public string Password { get; set; }
+
+        [StringLength(100)]
         public string HighestQualification { get; set; }
+
+        [Range(0, 50)]
         public int? YearsOfMathTeaching { get; set; }
+
+        [StringLength(500)]
         public string Biography { get; set; }
-    }
-
-    public class StudentEducatorAssignmentDto
-    {
-        [Required]
-        public Guid StudentId { get; set; }
-
-        [Required]
-        public Guid EducatorId { get; set; }
-    }
-
-    public class EducatorReassignmentDto
-    {
-        [Required]
-        public Guid FromEducatorId { get; set; }
-
-        [Required]
-        public Guid ToEducatorId { get; set; }
     }
 }
