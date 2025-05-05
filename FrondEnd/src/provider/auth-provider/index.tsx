@@ -7,13 +7,7 @@ import {
 } from "./context";
 import { AuthReducer } from "./reducer";
 import { useContext, useReducer } from "react";
-import {
-  signInError,
-  signInPending,
-  signInSuccess,
-  signUpPending,
-  signUpSuccess,
-} from "./actions";
+import { signUpPending, signUpSuccess } from "./actions";
 import axios from "axios";
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
