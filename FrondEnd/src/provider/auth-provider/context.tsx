@@ -13,7 +13,11 @@ export interface ICreateStudent {
   dateOfBirth: Date;
   educatorId: string; // Using string to represent Guid
 }
-
+export interface ISignInRequest {
+  userNameOrEmailAddress: "string";
+  password: "string";
+  rememberClient: true;
+}
 // Context shape interface
 export interface IAuthStateContext {
   isPending: boolean;
