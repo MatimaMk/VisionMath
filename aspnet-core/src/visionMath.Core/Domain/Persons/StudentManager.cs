@@ -72,7 +72,6 @@ namespace visionMath.Domain.Persons
                 {
                     UserId = Convert.ToInt64(user.Id),
                     StudentNumber = studentNumber,
-                    PhoneNumber = phoneNumber,
                     DateOfBirth = dateOfBirth,
                     EducatorId = educatorId,
                     Tests = new List<Test>(),

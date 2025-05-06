@@ -43,7 +43,7 @@ namespace visionMath.Domain.Persons
                     Name = firstName,
                     Surname = surname,
                     EmailAddress = emailAddress,
-                    PhoneNumber = phoneNumber,
+                  //  PhoneNumber = phoneNumber,
                     IsActive = true
                 };
 

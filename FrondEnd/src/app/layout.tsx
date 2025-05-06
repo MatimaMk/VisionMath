@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import ConfigProvider from "antd/es/config-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,9 +25,58 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {children}
-      </body>
+      <ConfigProvider
+        theme={{
+          token: {
+            colorSuccess: "#52c41a",
+            colorWarning: "#faad14",
+            colorPrimary: "#66d2ce",
+            colorInfo: "#66d2ce",
+            colorLink: "#1677ff",
+          },
+          components: {
+            Button: {
+              contentFontSize: 18,
+              contentFontSizeLG: 17,
+              contentFontSizeSM: 0,
+              contentLineHeightLG: 7.5,
+              paddingBlock: 4,
+              controlHeight: 49,
+            },
+            Input: {
+              controlHeight: 45,
+              lineWidth: 1.7,
+              borderRadius: 15,
+              activeBg: "rgb(255, 255, 255)",
+            },
+            Layout: {
+              headerHeight: 55,
+              headerBg: "rgb(34,36,38)",
+            },
+            Spin: {
+              dotSize: 57,
+              fontSize: 25,
+              motionDurationMid: "0.1s",
+            },
+            Carousel: {
+              dotHeight: 12,
+            },
+            Select: {
+              controlHeight: 49,
+              borderRadius: 15,
+            },
+            InputNumber: {
+              controlHeight: 48,
+              borderRadius: 15,
+              lineWidth: 2,
+            },
+          },
+        }}
+      >
+        <body className={`${geistSans.variable} ${geistMono.variable}`}>
+          {children}
+        </body>
+      </ConfigProvider>
     </html>
   );
 }
