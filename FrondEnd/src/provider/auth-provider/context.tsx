@@ -8,16 +8,25 @@ export interface ICreateStudent {
   username: string;
   password: string;
   phoneNumber?: string;
-  studentNumber: string;
+  studentNumber?: string;
   role: string;
-  dateOfBirth: Date;
-  educatorId: string; // Using string to represent Guid
+  dateOfBirth?: Date;
+  educatorId?: string; // Using string to represent Guid
+  highestQualification?: string;
+  yearsOfMathTeaching?: number;
+  biography?: string;
 }
 export interface ISignInRequest {
   userNameOrEmailAddress: "string";
   password: "string";
   rememberClient: true;
 }
+export interface ISignInResponse {
+  result: {
+    accessToken: string;
+  };
+}
+
 // Context shape interface
 export interface IAuthStateContext {
   isPending: boolean;
@@ -29,7 +38,7 @@ export interface IAuthStateContext {
 
 // Auth action context interface
 export interface IAuthActionContext {
-  //signIn: (SignInRequest: ISignInRequest) => Promise<ISignInResponse>;
+  signIn: (SignInRequest: ISignInRequest) => Promise<ISignInResponse>;
   signUp: (Auth: ICreateStudent) => Promise<void>;
 }
 

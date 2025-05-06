@@ -4,10 +4,18 @@ import {
   AuthActionContext,
   AuthStateContext,
   ICreateStudent,
+  ISignInRequest,
+  ISignInResponse,
 } from "./context";
 import { AuthReducer } from "./reducer";
 import { useContext, useReducer } from "react";
-import { signUpPending, signUpSuccess } from "./actions";
+import {
+  signInError,
+  signInPending,
+  signInSuccess,
+  signUpPending,
+  signUpSuccess,
+} from "./actions";
 import axios from "axios";
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -30,38 +38,38 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
   };
 
-  //   const signIn = async (
-  //     SignInRequest: ISignInRequest
-  //   ): Promise<ISignInResponse> => {
-  //     dispatch(signInPending());
-  //     //const endpoint = "https://localhost:44311/api/TokenAuth/Authenticate";
-  //     const endpoint =
-  //       "https://healthappointmentsystem-2.onrender.com/api/TokenAuth/Authenticate";
-  //     return axios
-  //       .post(endpoint, SignInRequest)
-  //       .then((response) => {
-  //         const token = response.data.result.accessToken;
-  //         if (token) {
-  //           sessionStorage.setItem("jwt", token);
-  //           dispatch(signInSuccess(token));
-  //           return response.data;
-  //         } else {
-  //           throw new Error("There is no response");
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         console.error(
-  //           "Error during signIn:",
-  //           error.response?.data?.message || error
-  //         );
-  //         dispatch(signInError());
-  //         throw error;
-  //       });
-  //   };
+  const signIn = async (
+    SignInRequest: ISignInRequest
+  ): Promise<ISignInResponse> => {
+    dispatch(signInPending());
+    //const endpoint = "https://localhost:44311/api/TokenAuth/Authenticate";
+    const endpoint =
+      "https://healthappointmentsystem-2.onrender.com/api/TokenAuth/Authenticate";
+    return axios
+      .post(endpoint, SignInRequest)
+      .then((response) => {
+        const token = response.data.result.accessToken;
+        if (token) {
+          sessionStorage.setItem("jwt", token);
+          dispatch(signInSuccess(token));
+          return response.data;
+        } else {
+          throw new Error("There is no response");
+        }
+      })
+      .catch((error) => {
+        console.error(
+          "Error during signIn:",
+          error.response?.data?.message || error
+        );
+        dispatch(signInError());
+        throw error;
+      });
+  };
 
   return (
     <AuthStateContext.Provider value={state}>
-      <AuthActionContext.Provider value={{ signUp }}>
+      <AuthActionContext.Provider value={{ signUp, signIn }}>
         {children}
       </AuthActionContext.Provider>
     </AuthStateContext.Provider>
