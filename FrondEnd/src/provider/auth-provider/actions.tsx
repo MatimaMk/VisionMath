@@ -1,6 +1,6 @@
 "use client";
 import { createAction } from "redux-actions";
-import { IAuthStateContext, ICreateStudent } from "./context";
+import { IAuthStateContext, ICreateEducator, ICreateStudent } from "./context";
 
 export enum AuthActionEnums {
   // define 3 states for each action (pending , success, error)
@@ -12,6 +12,10 @@ export enum AuthActionEnums {
   signUpPending = "SIGN_UP_PENDING",
   signUpSuccess = "SIGN_UP_SUCCESS",
   signUpError = "SIGN_UP_ERROR",
+
+  signUpEduPending = "SIGN_UPEDU_PENDING",
+  signUpEduSuccess = "SIGN_UPEDU_SUCCESS",
+  signUpEduError = "SIGN_UPEDU_ERROR",
 
   signOutPending = "SIGN_OUT_PENDING",
   signOutSuccess = "SIGN_OUT_SUCCESS",
@@ -25,16 +29,36 @@ export const signUpPending = createAction<IAuthStateContext>(
 
 export const signUpSuccess = createAction<IAuthStateContext, ICreateStudent>(
   AuthActionEnums.signUpSuccess,
-  (Auth: ICreateStudent) => ({
+  (studentData: ICreateStudent) => ({
     isPending: false,
     isSuccess: true,
     isError: false,
-    Auth: Auth,
+    studentData: studentData,
   })
 );
 
-export const signUpError = createAction<IAuthStateContext>(
+export const signUpEduError = createAction<IAuthStateContext>(
   AuthActionEnums.signUpError,
+  () => ({ isPending: false, isSuccess: false, isError: true })
+);
+
+export const signUpEduPending = createAction<IAuthStateContext>(
+  AuthActionEnums.signUpEduPending,
+  () => ({ isPending: true, isSuccess: false, isError: false })
+);
+
+export const signUpEduSuccess = createAction<
+  IAuthStateContext,
+  ICreateEducator
+>(AuthActionEnums.signUpEduSuccess, (educatorData: ICreateEducator) => ({
+  isPending: false,
+  isSuccess: true,
+  isError: false,
+  educatorData: educatorData,
+}));
+
+export const signUpError = createAction<IAuthStateContext>(
+  AuthActionEnums.signUpEduError,
   () => ({ isPending: false, isSuccess: false, isError: true })
 );
 

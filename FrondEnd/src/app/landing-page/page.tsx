@@ -1,6 +1,8 @@
+"use client";
 import React from "react";
 import { Globe } from "lucide-react";
 import { CSSProperties } from "react";
+import { useRouter } from "next/navigation";
 
 // Define the styles with proper TypeScript typing
 interface StylesDictionary {
@@ -238,6 +240,7 @@ const styles: StylesDictionary = {
 };
 
 const VisionMathLanding: React.FC = () => {
+  const router = useRouter();
   return (
     <div style={styles.layout}>
       <header style={styles.header}>
@@ -252,7 +255,12 @@ const VisionMathLanding: React.FC = () => {
         </nav>
         <div style={styles.headerButtons}>
           <button style={styles.textButton}>Log In</button>
-          <button style={styles.primaryButton}>Sign Up Free</button>
+          <button
+            style={styles.primaryButton}
+            onClick={() => router.push("/signUp")}
+          >
+            Sign Up Free
+          </button>
         </div>
       </header>
 
@@ -270,7 +278,12 @@ const VisionMathLanding: React.FC = () => {
               interactive lessons, and personalized education.
             </p>
             <div style={styles.actionButtons}>
-              <button style={styles.actionButton}>Get Started Free</button>
+              <button
+                style={styles.actionButton}
+                onClick={() => router.push("/login")}
+              >
+                Get Started Free
+              </button>
             </div>
           </div>
         </section>
