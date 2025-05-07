@@ -12,9 +12,7 @@ import WelcomePage from "./page";
 
 const { Header, Sider, Content } = Layout;
 
-export default function DashboardLayout({
-  children,
-}: Readonly<{
+export default function DashboardLayout({}: Readonly<{
   children: React.ReactNode;
 }>) {
   const [collapsed, setCollapsed] = useState(false);
