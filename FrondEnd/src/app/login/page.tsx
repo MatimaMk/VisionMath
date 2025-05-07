@@ -1,9 +1,15 @@
-"use client";
-import { useState } from "react";
-import LoginSignup from "./LoginSignup";
+import LoginForm from "@/components/login-form/page";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Login | VisionMath",
+  description: "Login to your VisionMath account",
+};
 
 export default function LoginPage() {
-  const [activeTab, setActiveTab] = useState<"login" | "signup">("login");
-
-  return <LoginSignup activeTab={activeTab} setActiveTab={setActiveTab} />;
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center p-24">
+      <LoginForm />
+    </div>
+  );
 }

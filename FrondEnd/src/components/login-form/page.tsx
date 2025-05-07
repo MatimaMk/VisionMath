@@ -1,12 +1,12 @@
+// src/components/login-form.tsx
 "use client";
 import { useState } from "react";
 import { Form, Input, Button, message } from "antd";
-import { MailOutlined } from "@ant-design/icons";
-
-import styles from "../../app/login/login-page.module.css";
+import { MailOutlined, LockOutlined } from "@ant-design/icons";
 import { useAuthActions } from "@/provider/auth-provider";
 import { useUserActions } from "@/provider/users-provider";
 import { ISignInRequest } from "@/provider/auth-provider/context";
+//import styles from "../../app/login/login-page.module.css";
 
 interface LoginFormProps {
   onLoginSuccess?: () => void;
@@ -18,118 +18,121 @@ export default function LoginForm({
   onBeforeSubmit,
 }: LoginFormProps) {
   const { signIn } = useAuthActions();
-  //const { userExists } = useCheckuserActions();
   const { getCurrentUser } = useUserActions();
   const [loading, setLoading] = useState(false);
-
-  // Configure toast message options
+  const [form] = Form.useForm<ISignInRequest>();
   const [messageApi, contextHolder] = message.useMessage();
 
-  // Toast message display functions
-  const showSuccessToast = (msg = "Successfully logged in!") => {
+  const showSuccessToast = (msg: string = "Successfully logged in!") => {
     messageApi.success({
       content: msg,
       duration: 3,
-      style: {
-        marginTop: "20px",
-      },
+      style: { marginTop: "20px" },
     });
   };
 
   const showErrorToast = (
-    msg = "Login failed! Please check your credentials."
+    msg: string = "Login failed! Please check your credentials."
   ) => {
     messageApi.error({
       content: msg,
       duration: 5,
-      style: {
-        marginTop: "20px",
-      },
+      style: { marginTop: "20px" },
     });
   };
 
-  //   // Handle login submit
-  //   const onFinishLogin = async (values: ISignInRequest) => {
-  //     onBeforeSubmit?.();
-  //     setLoading(true);
+  const onFinishLogin = async (values: ISignInRequest) => {
+    onBeforeSubmit?.();
+    setLoading(true);
 
-  //     const exists = await userExists({
-  //       emailAddress: values.userNameOrEmailAddress,
-  //       userName: "",
-  //     });
+    try {
+      const loginResult = await signIn(values);
 
-  //     if (!exists.result?.emailExists) {
-  //       setLoading(false);
-  //       showErrorToast("User does not exist");
-  //       return;
-  //     }
+      if (loginResult?.result?.accessToken) {
+        const token = loginResult.result.accessToken;
+        sessionStorage.setItem("jwt", token);
+        await getCurrentUser(token);
+        showSuccessToast();
+        onLoginSuccess?.();
+      } else {
+        showErrorToast("Invalid login response");
+      }
+    } catch (error: unknown) {
+      let errorMessage = "Login failed! Please check your credentials.";
 
-  //     try {
-  //       const loginResult = await signIn(values);
+      if (typeof error === "object" && error !== null && "response" in error) {
+        const axiosError = error as {
+          response?: { data?: { error?: { message?: string } } };
+        };
+        errorMessage =
+          axiosError.response?.data?.error?.message || errorMessage;
+      }
 
-  //       if (loginResult) {
-  //         const token = sessionStorage.getItem("jwt");
-  //         getCurrentUser(token);
-  //         setLoading(false);
-  //         showSuccessToast();
-  //         onLoginSuccess?.();
-  //       } else {
-  //         setLoading(false);
-  //         showErrorToast();
-  //       }
-  //     } catch (error) {
-  //       setLoading(false);
-  //       console.error("Login error:", error);
-  //       if (error.response && error.response.data) {
-  //         showErrorToast(
-  //           error.response.data.errorMessage ||
-  //             "Login failed! Please check your credentials."
-  //         );
-  //       } else {
-  //         showErrorToast();
-  //       }
-  //     }
-  //   };
+      showErrorToast(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
       {contextHolder}
-      <Form
+      <Form<ISignInRequest>
+        form={form}
         name="login"
         initialValues={{ remember: true }}
-        //onFinish={onFinishLogin}
+        onFinish={onFinishLogin}
         size="large"
         layout="vertical"
-        className={styles.form}
+        //className={styles.form}
       >
         <Form.Item
           name="userNameOrEmailAddress"
           validateTrigger={["onBlur", "onSubmit"]}
           rules={[
-            { required: true, message: "Please input your email!" },
-            { type: "email", message: "Please enter a valid email!" },
+            { required: true, message: "Please input your email or username!" },
+            {
+              validator(_, value) {
+                if (
+                  !value || value.includes("@")
+                    ? /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+                    : true
+                ) {
+                  return Promise.resolve();
+                }
+                return Promise.reject("Please enter a valid email or username");
+              },
+            },
           ]}
         >
           <Input
             prefix={<MailOutlined />}
-            placeholder="Email"
+            placeholder="Email or Username"
             disabled={loading}
           />
         </Form.Item>
 
         <Form.Item
           name="password"
-          rules={[{ required: true, message: "Please input your password!" }]}
+          rules={[
+            { required: true, message: "Please input your password!" },
+            { min: 8, message: "Password must be at least 8 characters!" },
+          ]}
         >
-          <Input.Password placeholder="Password" />
+          <Input.Password
+            prefix={<LockOutlined />}
+            placeholder="Password"
+            disabled={loading}
+          />
         </Form.Item>
 
         <Form.Item>
           <Button
             type="primary"
             htmlType="submit"
-            className={styles.submitButton}
+            //  className={styles.submitButton}
             loading={loading}
+            disabled={loading}
           >
             Log In
           </Button>
@@ -138,6 +141,3 @@ export default function LoginForm({
     </>
   );
 }
-// function useCheckuserActions(): { userExists: any } {
-//   throw new Error("Function not implemented.");
-// }

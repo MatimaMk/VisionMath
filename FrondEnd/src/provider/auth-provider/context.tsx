@@ -16,6 +16,17 @@ export interface ICreateStudent {
   yearsOfMathTeaching?: number;
   biography?: string;
 }
+export interface ICreateEducator {
+  firstName: string;
+  surname: string;
+  emailAddress: string;
+  userName: string;
+  password: string;
+  phoneNumber: string;
+  highestQualification: string;
+  yearsOfMathTeaching: number;
+  biography: string;
+}
 export interface ISignInRequest {
   userNameOrEmailAddress: "string";
   password: "string";
@@ -32,14 +43,17 @@ export interface IAuthStateContext {
   isPending: boolean;
   isSuccess: boolean;
   isError: boolean;
-  Auth?: ICreateStudent;
-  Auths?: ICreateStudent[]; // Array of Auths
+  studentData?: ICreateStudent;
+  studenstData?: ICreateStudent[];
+  educatorData?: ICreateEducator;
+  educatorsData?: ICreateEducator[]; // Array of Auths
 }
 
 // Auth action context interface
 export interface IAuthActionContext {
   signIn: (SignInRequest: ISignInRequest) => Promise<ISignInResponse>;
-  signUp: (Auth: ICreateStudent) => Promise<void>;
+  signUp: (studentData: ICreateStudent) => Promise<void>;
+  signUpEdu: (educatorData: ICreateEducator) => Promise<void>;
 }
 
 // Initial state with default values
@@ -47,7 +61,7 @@ export const INITIAL_STATE: IAuthStateContext = {
   isPending: false,
   isSuccess: false,
   isError: false,
-  Auths: [],
+  studenstData: [],
 };
 
 // Create the state context and the action context

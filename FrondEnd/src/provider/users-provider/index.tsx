@@ -5,20 +5,16 @@ import { INITIAL_STATE, UserActionContext, UserStateContext } from "./context";
 import { UserReducer } from "./reducer";
 import { useContext, useReducer } from "react";
 import {
-  getUserError,
   getUserPending,
   getUserSuccess,
   getCurrentUserPending,
   getCurrentUserSuccess,
   getCurrentUserError,
   createUserSuccess,
-  createUserError,
   createUserPending,
   updateUserPending,
   updateUserSuccess,
-  updateUserError,
   deleteUserSuccess,
-  deleteUserError,
   deleteUserPending,
 } from "./actions";
 import axios from "axios";

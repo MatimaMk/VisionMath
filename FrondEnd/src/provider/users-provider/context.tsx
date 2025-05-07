@@ -14,7 +14,7 @@ export interface IUserStateContext {
 
 // User action context interface
 export interface IUserActionContext {
-  getCurrentUser: (token: string) => Promise<IUser>;
+  getCurrentUser: (token: string) => Promise<IUser | null>;
   getUsers: () => void; // Fetch all users
   getUser: (id: string) => void; // Fetch a single user
   createUser: (user: IUser) => void; // Create a new user
