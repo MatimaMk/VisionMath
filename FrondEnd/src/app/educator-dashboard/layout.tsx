@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import {
   MenuFoldOutlined,
@@ -10,7 +11,7 @@ import { Button, Layout, Menu, theme } from "antd";
 
 const { Header, Sider, Content } = Layout;
 
-const App: React.FC = () => {
+const EducatorDash: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -77,4 +78,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default EducatorDash;
