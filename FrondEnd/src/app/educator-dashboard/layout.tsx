@@ -8,17 +8,20 @@ import {
   VideoCameraOutlined,
 } from "@ant-design/icons";
 import { Button, Layout, Menu, theme } from "antd";
+import WelcomePage from "./page";
 
 const { Header, Sider, Content } = Layout;
 
-const EducatorDash: React.FC = () => {
+export default function DashboardLayout({}: Readonly<{
+  children: React.ReactNode;
+}>) {
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
   return (
-    <Layout>
+    <Layout style={{ minHeight: "100vh" }}>
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="demo-logo-vertical" />
         <Menu
@@ -71,11 +74,9 @@ const EducatorDash: React.FC = () => {
             borderRadius: borderRadiusLG,
           }}
         >
-          Content
+          <WelcomePage />
         </Content>
       </Layout>
     </Layout>
   );
-};
-
-export default EducatorDash;
+}
