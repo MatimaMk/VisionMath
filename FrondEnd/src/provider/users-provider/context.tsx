@@ -20,7 +20,7 @@ export interface IUserActionContext {
   createUser: (user: IUser) => void; // Create a new user
   updateUser: (user: IUser) => void; // Update an existing user
   deleteUser: (id: string) => void; // Delete a user
-  //getCurrentPatient: (userId: number) => Promise<IPatient>; // Fixed camelCase name
+  //getcurrentEducator: (userId: number) => Promise<IPatient>; // Fixed camelCase name
 }
 
 // Initial state with default values

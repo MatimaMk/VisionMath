@@ -64,9 +64,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     SignInRequest: ISignInRequest
   ): Promise<ISignInResponse> => {
     dispatch(signInPending());
-    //const endpoint = "https://localhost:44311/api/TokenAuth/Authenticate";
-    const endpoint =
-      "https://healthappointmentsystem-2.onrender.com/api/TokenAuth/Authenticate";
+    const endpoint = "https://localhost:44311/api/TokenAuth/Authenticate";
+
     return axios
       .post(endpoint, SignInRequest)
       .then((response) => {

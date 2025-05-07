@@ -1,4 +1,3 @@
-// src/components/login-form.tsx
 "use client";
 import { useState } from "react";
 import { Form, Input, Button, message } from "antd";
@@ -6,6 +5,7 @@ import { MailOutlined, LockOutlined } from "@ant-design/icons";
 import { useAuthActions } from "@/provider/auth-provider";
 import { useUserActions } from "@/provider/users-provider";
 import { ISignInRequest } from "@/provider/auth-provider/context";
+import { useRouter } from "next/navigation";
 //import styles from "../../app/login/login-page.module.css";
 
 interface LoginFormProps {
@@ -22,6 +22,7 @@ export default function LoginForm({
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm<ISignInRequest>();
   const [messageApi, contextHolder] = message.useMessage();
+  const router = useRouter();
 
   const showSuccessToast = (msg: string = "Successfully logged in!") => {
     messageApi.success({
@@ -54,6 +55,7 @@ export default function LoginForm({
         await getCurrentUser(token);
         showSuccessToast();
         onLoginSuccess?.();
+        router.push("/educator-dashboard");
       } else {
         showErrorToast("Invalid login response");
       }

@@ -83,7 +83,7 @@ export const getCurrentUserSuccess = createAction<IUserStateContext, IUser>(
     isPending: false,
     isSuccess: true,
     isError: false,
-    currentUser, 
+    currentUser,
   })
 );
 
@@ -133,7 +133,6 @@ export const updateUserError = createAction<IUserStateContext>(
   UserActionEnums.updateUserError,
   () => ({ isPending: false, isSuccess: false, isError: true })
 );
-
 
 export const deleteUserPending = createAction<IUserStateContext>(
   UserActionEnums.deleteUserPending,

@@ -25,7 +25,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   // Get current user
   const getCurrentUser = async (token: string): Promise<IUser> => {
     dispatch(getCurrentUserPending());
-    const endpoint = `https://healthappointmentsystem-2.onrender.com/api/services/app/Session/GetCurrentLoginInformations`;
+    const endpoint = `/Session/GetCurrentLoginInformations`;
     return axios
       .get(endpoint, {
         headers: { Authorization: `Bearer ${token}` },
