@@ -6,6 +6,7 @@ import { AuthProvider } from "@/provider/auth-provider";
 import { UserProvider } from "@/provider/users-provider";
 import { TopicProvider } from "@/provider/topic-Provider";
 import { ContentProvider } from "@/provider/content-provider";
+import { TestProvider } from "@/provider/test-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -55,7 +56,7 @@ export default function RootLayout({
             },
             Layout: {
               headerHeight: 55,
-              headerBg: "rgb(34,36,38)",
+              headerBg: "rgb(187, 199, 19)",
             },
             Spin: {
               dotSize: 57,
@@ -81,7 +82,9 @@ export default function RootLayout({
           <AuthProvider>
             <UserProvider>
               <TopicProvider>
-                <ContentProvider>{children} </ContentProvider>{" "}
+                <ContentProvider>
+                  <TestProvider>{children}</TestProvider>
+                </ContentProvider>
               </TopicProvider>
             </UserProvider>
           </AuthProvider>
