@@ -1,5 +1,6 @@
 "use client";
-import { difficultLevel } from "@/app/enums/difficultLevel";
+
+import { difficultLevel } from "@/enums/difficultLevel";
 import { createContext } from "react";
 
 export interface ITopic {

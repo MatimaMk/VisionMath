@@ -5,8 +5,8 @@ namespace visionMath.Domain.Resources
     public  enum ReflistContentType
     {
 
-        [Description("Lesson videos")]
-        Video=1,
+        //[Description("Lesson videos")]
+        //Video=1,
 
         [Description("Text explanations")]
         Notes=2,
