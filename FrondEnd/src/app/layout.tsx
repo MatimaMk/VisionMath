@@ -35,8 +35,8 @@ export default function RootLayout({
           token: {
             colorSuccess: "#52c41a",
             colorWarning: "#faad14",
-            colorPrimary: "#66d2ce",
-            colorInfo: "#66d2ce",
+            colorPrimary: "#35be8994",
+            colorInfo: "#35be8994",
             colorLink: "#1677ff",
           },
           components: {
@@ -56,7 +56,7 @@ export default function RootLayout({
             },
             Layout: {
               headerHeight: 55,
-              headerBg: "rgb(187, 199, 19)",
+              headerBg: "#35be8994",
             },
             Spin: {
               dotSize: 57,

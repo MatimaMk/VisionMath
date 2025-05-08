@@ -1,0 +1,110 @@
+.topicsContainer {
+  padding: 24px;
+  background-color: #f0f2f5;
+  min-height: 100vh;
+}
+
+.topicsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.topicsTitle {
+  margin: 0;
+  color: #1f1f1f;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.topicsActions {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.searchInput {
+  width: 300px;
+}
+
+.addButton {
+  background-color: #1890ff;
+  color: #fff;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.addButton:hover {
+  background-color: #40a9ff;
+}
+
+.topicsTable {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.topicsTable :global(.ant-table-thead > tr > th) {
+  background-color: #fafafa;
+  font-weight: 500;
+}
+
+.topicsTable :global(.ant-table-tbody > tr:hover > td) {
+  background-color: #f5f7fa;
+}
+
+.editButton {
+  background-color: #faad14;
+  border-color: #faad14;
+}
+
+.editButton:hover {
+  background-color: #ffc53d;
+  border-color: #ffc53d;
+}
+
+.deleteButton {
+  background-color: #fff;
+  border-color: #ff4d4f;
+  color: #ff4d4f;
+}
+
+.deleteButton:hover {
+  background-color: #ff4d4f;
+  border-color: #ff4d4f;
+  color: #fff;
+}
+
+.topicForm {
+  margin-top: 16px;
+}
+
+.datePicker {
+  width: 100%;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .topicsHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .topicsActions {
+    width: 100%;
+  }
+
+  .searchInput {
+    width: 100%;
+  }
+
+  .addButton {
+    width: 100%;
+    justify-content: center;
+  }
+}
