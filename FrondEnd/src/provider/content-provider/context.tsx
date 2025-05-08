@@ -9,6 +9,7 @@ export interface IContent {
   contentType?: contentTypes;
   textContent?: string;
   orderNumber?: number;
+  pdfUrl?: string;
 }
 
 export interface IContentStateContext {
@@ -17,7 +18,6 @@ export interface IContentStateContext {
   isError: boolean;
   content?: IContent;
   contents?: IContent[];
-  pdfUrl?: string;
 }
 
 // Initial state with default values
