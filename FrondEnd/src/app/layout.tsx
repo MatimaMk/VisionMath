@@ -4,6 +4,8 @@ import "./globals.css";
 import ConfigProvider from "antd/es/config-provider";
 import { AuthProvider } from "@/provider/auth-provider";
 import { UserProvider } from "@/provider/users-provider";
+import { TopicProvider } from "@/provider/topic-Provider";
+import { ContentProvider } from "@/provider/content-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -78,7 +80,12 @@ export default function RootLayout({
         <body className={`${geistSans.variable} ${geistMono.variable}`}>
           <AuthProvider>
             {" "}
-            <UserProvider> {children} </UserProvider>
+            <UserProvider>
+              {" "}
+              <TopicProvider>
+                <ContentProvider>{children} </ContentProvider>{" "}
+              </TopicProvider>
+            </UserProvider>
           </AuthProvider>
         </body>
       </ConfigProvider>
