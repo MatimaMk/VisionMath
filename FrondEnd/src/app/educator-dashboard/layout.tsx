@@ -8,14 +8,13 @@ import {
   VideoCameraOutlined,
 } from "@ant-design/icons";
 import { Button, Layout, Menu, theme } from "antd";
-import WelcomePage from "./page";
-import TopicsManagement from "./topic/page";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 const { Header, Sider, Content } = Layout;
 
-export default function DashboardLayout({}: Readonly<{
+export default function DashboardLayout({
+  children,
+}: Readonly<{
   children: React.ReactNode;
 }>) {
   const [collapsed, setCollapsed] = useState(false);
@@ -77,7 +76,7 @@ export default function DashboardLayout({}: Readonly<{
             borderRadius: borderRadiusLG,
           }}
         >
-          <WelcomePage />
+          {children}
         </Content>
       </Layout>
     </Layout>

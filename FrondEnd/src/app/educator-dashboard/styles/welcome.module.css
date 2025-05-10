@@ -1,0 +1,292 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.skeletonContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 500px;
+}
+
+.skeletonCard {
+  width: 90%;
+  max-width: 800px;
+}
+
+.welcomeSection {
+  margin-bottom: 32px;
+}
+
+.welcomeCard {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  height: 100%;
+}
+
+.welcomeHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.welcomeTitle {
+  margin-bottom: 0 !important;
+  background: linear-gradient(135deg, #20b2aa 0%, #4ade80 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  font-weight: 700;
+}
+
+.wave {
+  display: inline-block;
+  animation: wave 2s infinite;
+  transform-origin: 70% 70%;
+  font-size: 1.2em;
+}
+
+@keyframes wave {
+  0% {
+    transform: rotate(0deg);
+  }
+  10% {
+    transform: rotate(14deg);
+  }
+  20% {
+    transform: rotate(-8deg);
+  }
+  30% {
+    transform: rotate(14deg);
+  }
+  40% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(10deg);
+  }
+  60% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.mathSymbols {
+  display: flex;
+  gap: 12px;
+}
+
+.mathSymbols span {
+  font-size: 24px;
+  font-weight: 700;
+  color: #20b2aa;
+  opacity: 0.7;
+  animation: float 3s infinite ease-in-out;
+}
+
+.mathSymbols span:nth-child(2) {
+  animation-delay: 0.5s;
+  color: #4ade80;
+}
+
+.mathSymbols span:nth-child(3) {
+  animation-delay: 1s;
+  color: #3ac7b4;
+}
+
+.mathSymbols span:nth-child(4) {
+  animation-delay: 1.5s;
+  color: #38d9a9;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.welcomeText {
+  font-size: 16px;
+  margin-bottom: 24px !important;
+}
+
+.statsContainer {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.stat {
+  text-align: center;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.continueButton {
+  background: linear-gradient(135deg, #20b2aa 0%, #4ade80 100%);
+  border: none;
+}
+
+.profileCard {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  height: 100%;
+}
+
+.profileHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.avatarContainer {
+  margin-bottom: 16px;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #20b2aa 0%, #4ade80 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  font-weight: bold;
+}
+
+.profileName {
+  margin-bottom: 4px !important;
+}
+
+.profileStats {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.profileStat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.viewProfileButton {
+  margin-top: 8px;
+}
+
+.sectionTitle {
+  margin-bottom: 24px !important;
+  position: relative;
+  padding-left: 16px;
+  border-left: 4px solid #20b2aa;
+}
+
+.categoriesSection {
+  margin-bottom: 48px;
+}
+
+.categoryCard {
+  height: 100%;
+  transition: all 0.3s;
+}
+
+.categoryCard:hover {
+  transform: translateY(-5px);
+}
+
+.categoryContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.categoryIcon {
+  font-size: 36px;
+  color: #20b2aa;
+  margin-bottom: 16px;
+}
+
+.categoryDescription {
+  margin-bottom: 16px !important;
+  min-height: 60px;
+}
+
+.exploreButton {
+  margin-top: auto;
+}
+
+.recommendedSection {
+  margin-bottom: 32px;
+}
+
+.recommendedCard {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+}
+
+.recTopicCard {
+  margin-top: 16px;
+}
+
+.progressBar {
+  height: 24px;
+  background-color: #f0f0f0;
+  border-radius: 12px;
+  margin: 12px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(135deg, #20b2aa 0%, #4ade80 100%);
+  border-radius: 12px;
+  transition: width 0.5s ease-in-out;
+}
+
+.progressText {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+  .statsContainer {
+    justify-content: center;
+  }
+
+  .actionButtons {
+    justify-content: center;
+  }
+}

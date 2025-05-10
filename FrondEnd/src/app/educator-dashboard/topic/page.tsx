@@ -20,6 +20,7 @@ import {
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
 
+import { ColumnsType } from "antd/es/table";
 import { difficultLevel } from "@/enums/difficultLevel";
 import styles from "./styles/topicsManagement.module.css";
 import dayjs from "dayjs";
@@ -35,17 +36,14 @@ const TopicsManagement: React.FC = () => {
   const [editingTopic, setEditingTopic] = useState<ITopic | null>(null);
   const [searchText, setSearchText] = useState("");
 
-  // Access topics state and actions
   const { isPending, isSuccess, isError, topics } = useTopicState();
   const { getAllTopics, createTopic, updateTopic, deleteTopic } =
     useTopicActions();
 
-  // Load topics when component mounts
   useEffect(() => {
     getAllTopics();
   }, []);
 
-  // Handle success and error states
   useEffect(() => {
     if (isSuccess && !isPending) {
       message.success(
@@ -65,18 +63,17 @@ const TopicsManagement: React.FC = () => {
     }
   }, [isPending, isSuccess, isError]);
 
-  // Table columns definition
-  const columns = [
+  const columns: ColumnsType<ITopic> = [
     {
       title: "Title",
       dataIndex: "topicTittle",
       key: "topicTittle",
       filteredValue: searchText ? [searchText] : null,
-      onFilter: (value: string | number | symbol, record: ITopic) =>
+      onFilter: (value, record) =>
         record.topicTittle
           ?.toLowerCase()
           .includes(String(value).toLowerCase()) || false,
-      sorter: (a: ITopic, b: ITopic) =>
+      sorter: (a, b) =>
         (a.topicTittle || "").localeCompare(b.topicTittle || ""),
     },
     {
@@ -91,7 +88,7 @@ const TopicsManagement: React.FC = () => {
       key: "estimatedTime",
       render: (estimatedTime: Date) =>
         estimatedTime ? dayjs(estimatedTime).format("YYYY-MM-DD HH:mm") : "-",
-      sorter: (a: ITopic, b: ITopic) => {
+      sorter: (a, b) => {
         if (!a.estimatedTime) return -1;
         if (!b.estimatedTime) return 1;
         return (
@@ -105,7 +102,7 @@ const TopicsManagement: React.FC = () => {
       dataIndex: "difficultLevel",
       key: "difficultLevel",
       render: (level: difficultLevel) => {
-        const levelMap = {
+        const levelMap: Record<difficultLevel, string> = {
           [difficultLevel.Easy]: "Easy",
           [difficultLevel.Medium]: "Medium",
           [difficultLevel.Difficult]: "Hard",
@@ -117,13 +114,12 @@ const TopicsManagement: React.FC = () => {
         { text: "Medium", value: difficultLevel.Medium },
         { text: "Hard", value: difficultLevel.Difficult },
       ],
-      onFilter: (value: number, record: ITopic) =>
-        record.difficultLevel === value,
+      onFilter: (value, record) => record.difficultLevel === value,
     },
     {
       title: "Actions",
       key: "actions",
-      render: (_: any, record: ITopic) => (
+      render: (_, record) => (
         <Space>
           <Button
             type="primary"
@@ -149,14 +145,12 @@ const TopicsManagement: React.FC = () => {
     },
   ];
 
-  // Handle opening modal for creating a new topic
   const showCreateModal = () => {
     form.resetFields();
     setEditingTopic(null);
     setIsModalVisible(true);
   };
 
-  // Handle editing a topic
   const handleEdit = (topic: ITopic) => {
     setEditingTopic(topic);
     form.setFieldsValue({
@@ -168,14 +162,12 @@ const TopicsManagement: React.FC = () => {
     setIsModalVisible(true);
   };
 
-  // Handle deleting a topic
   const handleDelete = (topic: ITopic) => {
     if (topic.id) {
       deleteTopic(topic.id);
     }
   };
 
-  // Handle form submission
   const handleFormSubmit = () => {
     form.validateFields().then((values) => {
       const topicData: ITopic = {
@@ -193,14 +185,12 @@ const TopicsManagement: React.FC = () => {
     });
   };
 
-  // Handle modal closing
   const handleCancel = () => {
     setIsModalVisible(false);
     form.resetFields();
     setEditingTopic(null);
   };
 
-  // Handle search input change
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
   };

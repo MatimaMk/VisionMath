@@ -11,12 +11,11 @@ import {
   Typography,
   Card,
 } from "antd";
-import { MailOutlined, LockOutlined, GoogleOutlined } from "@ant-design/icons";
+import { MailOutlined, LockOutlined } from "@ant-design/icons";
 import { useAuthActions } from "@/provider/auth-provider";
 import { useUserActions } from "@/provider/users-provider";
 import { ISignInRequest } from "@/provider/auth-provider/context";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -107,7 +106,7 @@ export default function LoginForm({
             <div
               style={{
                 background: "linear-gradient(135deg, #20B2AA 0%, #4ade80 100%)",
-                height: "100%",
+                height: "100vh",
                 minHeight: "600px",
                 display: "flex",
                 alignItems: "center",
@@ -165,12 +164,19 @@ export default function LoginForm({
 
           {/* Right side - Login form */}
           <Col xs={24} md={12} style={{ padding: "40px" }}>
-            <div style={{ textAlign: "center", marginBottom: "32px" }}>
+            <div
+              style={{
+                textAlign: "center",
+                marginBottom: "32px",
+                marginTop: "200px",
+              }}
+            >
               <Title
                 level={2}
                 style={{
                   fontSize: "24px",
                   marginBottom: "8px",
+
                   color: "linear-gradient(135deg, #20B2AA 0%, #4ade80 100%)",
                 }}
               >
@@ -268,7 +274,7 @@ export default function LoginForm({
                   color: "#595959",
                 }}
               >
-                Don't have an account?{" "}
+                Don&apos;t have an account?{" "}
                 <a
                   href="#"
                   style={{
