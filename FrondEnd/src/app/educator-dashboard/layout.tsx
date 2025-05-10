@@ -8,11 +8,13 @@ import {
   VideoCameraOutlined,
 } from "@ant-design/icons";
 import { Button, Layout, Menu, theme } from "antd";
-import WelcomePage from "./page";
+import Link from "next/link";
 
 const { Header, Sider, Content } = Layout;
 
-export default function DashboardLayout({}: Readonly<{
+export default function DashboardLayout({
+  children,
+}: Readonly<{
   children: React.ReactNode;
 }>) {
   const [collapsed, setCollapsed] = useState(false);
@@ -30,24 +32,24 @@ export default function DashboardLayout({}: Readonly<{
           defaultSelectedKeys={["1"]}
           items={[
             {
-              key: "1",
+              key: "/educator-dashboard",
               icon: <UserOutlined />,
               label: "Student",
             },
             {
-              key: "2",
+              key: "/educator-dashboard/topic",
               icon: <VideoCameraOutlined />,
-              label: "Topics",
+              label: <Link href="/educator-dashboard/topic">Topics</Link>,
             },
             {
-              key: "3",
+              key: "/educator-dashboard/content",
               icon: <UploadOutlined />,
-              label: " Content",
+              label: <Link href="/educator-dashboard/content">Content</Link>,
             },
             {
-              key: "4",
+              key: "/educator-dashboard/test",
               icon: <UploadOutlined />,
-              label: " Tests",
+              label: <Link href="/educator-dashboard/test">Test</Link>,
             },
           ]}
         />
@@ -74,7 +76,7 @@ export default function DashboardLayout({}: Readonly<{
             borderRadius: borderRadiusLG,
           }}
         >
-          <WelcomePage />
+          {children}
         </Content>
       </Layout>
     </Layout>
