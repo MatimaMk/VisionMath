@@ -4,40 +4,126 @@ import { difficultLevel } from "@/enums/difficultLevel";
 import { questionTypes } from "@/enums/questionTypes";
 import { createContext } from "react";
 
-export interface IcreateTest {
-  title?: string;
-  description?: string;
-  timeLimitMinutes?: Date;
-  difficultyLevel?: difficultLevel;
-  passingPercentage?: number;
-  instructions?: string;
-  questions?: IQuestion[];
-}
-export interface IQuestion {
-  questionText?: string;
-  questionType?: questionTypes;
-  questionPoints?: number;
-  solutionExplanation?: string;
-  questionOptions?: IQuestionOption[];
-}
-
-export interface IQuestionOption {
-  optionText?: string;
-  isCorrect?: boolean;
-  orderNumber?: number;
+// Base Types
+export interface QuestionOptionDto {
+  id?: string;
+  optionText: string;
+  isCorrect: boolean;
+  orderNumber: number;
   explanation?: string;
 }
 
+export interface QuestionDto {
+  id?: string;
+  questionText: string;
+  questionType: questionTypes;
+  questionPoints: number;
+  solutionExplanation: string;
+  questionOptions?: QuestionOptionDto[];
+}
+
+export interface TestDto {
+  id?: string;
+  title: string;
+  description: string;
+  timeLimitMinutes: number;
+  difficultyLevel: difficultLevel;
+  passingPercentage: number;
+  instructions: string;
+  attempts: number;
+  questions?: QuestionDto[]; // Make this optional to avoid type issues
+  creationTime?: string;
+}
+
+// Create DTOs
+export interface CreateQuestionOptionDto {
+  optionText: string;
+  isCorrect: boolean;
+  orderNumber: number;
+  explanation?: string;
+}
+
+export interface CreateQuestionDto {
+  questionText: string;
+  questionType: questionTypes;
+  questionPoints: number;
+  solutionExplanation: string;
+  questionOptions: CreateQuestionOptionDto[];
+}
+
+export interface CreateTestDto {
+  title: string;
+  description: string;
+  timeLimitMinutes: number;
+  difficultyLevel: difficultLevel;
+  passingPercentage: number;
+  instructions: string;
+  questions: CreateQuestionDto[];
+}
+
+// Update DTOs
+export interface UpdateQuestionOptionDto {
+  id?: string;
+  optionText: string;
+  isCorrect: boolean;
+  orderNumber: number;
+  explanation?: string;
+}
+
+export interface UpdateQuestionDto {
+  id?: string;
+  questionText: string;
+  questionType: questionTypes;
+  questionPoints: number;
+  solutionExplanation: string;
+  questionOptions: UpdateQuestionOptionDto[];
+}
+
+export interface UpdateTestDto {
+  id?: string;
+  title: string;
+  description: string;
+  timeLimitMinutes: number;
+  difficultyLevel: difficultLevel;
+  passingPercentage: number;
+  instructions: string;
+  questions: UpdateQuestionDto[];
+}
+
+// Test submission types
+export interface SubmitTestAnswersDto {
+  testId: string;
+  answers: SubmitAnswerDto[];
+}
+
+export interface SubmitAnswerDto {
+  questionId: string;
+  selectedOptionId?: string;
+  textAnswer?: string;
+  numericAnswer?: number;
+}
+
+export interface SubmitTestResultDto {
+  testId: string;
+  earnedPoints: number;
+  totalPoints: number;
+  percentage: number;
+  passed: boolean;
+}
+
+// This extends TestDto but guarantees questions array exists
+export interface TestWithQuestionsDto extends TestDto {
+  questions: QuestionDto[];
+}
+
+// State interface - using TestDto to match what we get from backend
 export interface ITestStateContext {
   isPending: boolean;
   isSuccess: boolean;
   isError: boolean;
-  test?: IcreateTest;
-  tests?: IcreateTest[];
-  question?: IQuestion;
-  questions?: IQuestion[];
-  questionOption?: IQuestionOption;
-  questionOptions?: IQuestionOption[];
+  test?: TestDto; // Changed from TestWithQuestionsDto to TestDto
+  tests?: TestDto[];
+  submissionResult?: SubmitTestResultDto;
 }
 
 // Initial state with default values
@@ -46,17 +132,15 @@ export const INITIAL_STATE: ITestStateContext = {
   isSuccess: false,
   isError: false,
   tests: [],
-  questions: [],
-  questionOptions: [],
 };
 
 export interface ITestActionContext {
-  createTest: (test: IcreateTest) => void;
-  getAllTests: () => void;
-  getTestWithQuestions: (id: string) => void;
-  updateTest: (test: IcreateTest) => void;
-  deleteTest: (id: string) => void;
-  submitTestAnswers: () => void;
+  createTest: (test: CreateTestDto) => Promise<void>;
+  getAllTests: () => Promise<void>;
+  getTestWithQuestions: (id: string) => Promise<void>;
+  updateTest: (test: UpdateTestDto) => Promise<void>;
+  deleteTest: (id: string) => Promise<void>;
+  submitTestAnswers: (answers: SubmitTestAnswersDto) => Promise<void>;
 }
 
 export const TestStateContext = createContext<ITestStateContext>(INITIAL_STATE);

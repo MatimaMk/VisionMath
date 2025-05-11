@@ -40,7 +40,7 @@ export const TopicProvider = ({ children }: { children: React.ReactNode }) => {
   // Get All Patients
   const getAllTopics = async () => {
     dispatch(getTopicsPending());
-    const endpoint = `/api/services/app/Topic/GetAll`;
+    const endpoint = `/TopicService/GetAll`;
     await instance
       .get(endpoint)
       .then((response) => {
@@ -56,7 +56,7 @@ export const TopicProvider = ({ children }: { children: React.ReactNode }) => {
 
   const getTopicById = async (id: string) => {
     dispatch(getTopicsPending());
-    const endpoint = `/api/services/app/Topic/Get?Id=${id}`;
+    const endpoint = `/TopicService/Get?Id=${id}`;
     await instance
       .get(endpoint)
       .then((response) => {
@@ -72,7 +72,7 @@ export const TopicProvider = ({ children }: { children: React.ReactNode }) => {
 
   const updateTopic = async (Topic: ITopic) => {
     dispatch(createTopicPending());
-    const endpoint = `/api/services/app/Topic/Update`;
+    const endpoint = `/TopicService/Update`;
     await instance
       .put(endpoint, Topic)
       .then((response) => {
@@ -86,7 +86,7 @@ export const TopicProvider = ({ children }: { children: React.ReactNode }) => {
 
   const deleteTopic = async (id: string) => {
     dispatch(createTopicPending());
-    const endpoint = `/api/services/app/Topic/Delete?Id=${id}`;
+    const endpoint = `/TopicService/Delete?Id=${id}`;
     await instance
       .delete(endpoint)
       .then((response) => {

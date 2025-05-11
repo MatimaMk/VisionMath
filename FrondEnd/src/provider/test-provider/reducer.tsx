@@ -74,6 +74,20 @@ export const TestReducer = handleActions<ITestStateContext, ITestStateContext>(
       ...state,
       ...action.payload,
     }),
+
+    //Submit Test Answer
+    submitTestAnswerPending: (state, action) => ({
+      ...state,
+      ...action.payload,
+    }),
+    submitTestAnswerSuccess: (state, action) => ({
+      ...state,
+      ...action.payload,
+    }),
+    submitTestAnswerError: (state, action) => ({
+      ...state,
+      ...action.payload,
+    }),
   },
   INITIAL_STATE
 );

@@ -1,0 +1,155 @@
+.testBuilder {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.formCard {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+}
+
+.formRow {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.formColumn {
+  flex: 1;
+}
+
+.emptyQuestions {
+  text-align: center;
+  padding: 30px;
+  background-color: #fafafa;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  border: 1px dashed #d9d9d9;
+}
+
+.questionsCollapse {
+  margin-bottom: 20px;
+}
+
+.questionForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px 0;
+}
+
+.questionHeader {
+  display: flex;
+  gap: 16px;
+}
+
+.questionText {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+}
+
+.questionText label {
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.questionMeta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.questionMeta > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.questionMeta label {
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.optionsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.optionsContainer label {
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.optionRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.optionInput {
+  flex: 1;
+}
+
+.correctSelect {
+  width: 120px;
+}
+
+.addOptionBtn {
+  margin-top: 8px;
+  align-self: flex-start;
+}
+
+.explanationField {
+  display: flex;
+  flex-direction: column;
+}
+
+.explanationField label {
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.actionButtons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 32px;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.addQuestionBtn {
+  min-width: 140px;
+}
+
+.submitBtn {
+  min-width: 140px;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .formRow {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .questionHeader {
+    flex-direction: column;
+  }
+
+  .actionButtons {
+    flex-direction: column-reverse;
+    gap: 12px;
+  }
+
+  .addQuestionBtn,
+  .submitBtn {
+    width: 100%;
+  }
+}

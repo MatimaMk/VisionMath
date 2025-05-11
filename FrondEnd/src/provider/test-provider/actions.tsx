@@ -1,7 +1,6 @@
 "use client";
 
-import { createAction } from "redux-actions";
-import { IcreateTest, ITestStateContext } from "./context";
+import { TestDto, TestWithQuestionsDto, SubmitTestResultDto } from "./context";
 
 export enum TestActionEnums {
   //create Test
@@ -14,13 +13,12 @@ export enum TestActionEnums {
   getAllTestsSuccess = "GET_ALL_TESTS_SUCCESS",
   getAllTestsError = "GET_ALL_TESTS_ERROR",
 
-  //get All Tests
+  //get Test with Questions
   getTestWithQuestionsPending = "GET_TEST_withQ_PENDING",
   getTestWithQuestionsSuccess = "GET_TEST_withQ_SUCCESS",
   getTestWithQuestionsError = "GET_TEST_withQ_ERROR",
 
   //update Test
-
   updateTestPending = "UPDATE_TEST_PENDING",
   updateTestSuccess = "UPDATE_TEST_SUCCESS",
   updateTestError = "UPDATE_TEST_ERROR",
@@ -30,138 +28,135 @@ export enum TestActionEnums {
   deleteTestSuccess = "DELETE_TEST_SUCCESS",
   deleteTestError = "DELETE_TEST_ERROR",
 
-  //delete Test
+  //submit Test Answer
   submitTestAnswerPending = "SUBMIT_TEST_PENDING",
   submitTestAnswerSuccess = "SUBMIT_TEST_SUCCESS",
   submitTestAnswerError = "SUBMIT_TEST_ERROR",
 }
 
-//Create Test
+// Create Test actions
+export const createTestPending = () => ({
+  type: TestActionEnums.createTestPending,
+  payload: { isPending: true, isSuccess: false, isError: false },
+});
 
-export const createTestPending = createAction<ITestStateContext>(
-  TestActionEnums.createTestPending,
-  () => ({ isPending: true, isSuccess: false, isError: false })
-);
-
-export const createTestSuccess = createAction<ITestStateContext, IcreateTest>(
-  TestActionEnums.createTestSuccess,
-  (test: IcreateTest) => ({
+export const createTestSuccess = (test: TestDto) => ({
+  type: TestActionEnums.createTestSuccess,
+  payload: {
     isPending: false,
     isSuccess: true,
     isError: false,
     test,
-  })
-);
+  },
+});
 
-export const createTestError = createAction<ITestStateContext>(
-  TestActionEnums.createTestError,
-  () => ({ isPending: false, isSuccess: false, isError: true })
-);
+export const createTestError = () => ({
+  type: TestActionEnums.createTestError,
+  payload: { isPending: false, isSuccess: false, isError: true },
+});
 
-//Get All Tests
-export const getAllTestsPending = createAction<ITestStateContext>(
-  TestActionEnums.getAllTestsPending,
-  () => ({ isPending: true, isSuccess: false, isError: false })
-);
+// Get All Tests actions
+export const getAllTestsPending = () => ({
+  type: TestActionEnums.getAllTestsPending,
+  payload: { isPending: true, isSuccess: false, isError: false },
+});
 
-export const getAllTestsSuccess = createAction<
-  ITestStateContext,
-  IcreateTest[]
->(TestActionEnums.getAllTestsSuccess, (tests: IcreateTest[]) => ({
-  isPending: false,
-  isSuccess: true,
-  isError: false,
-  tests,
-}));
+export const getAllTestsSuccess = (tests: TestDto[]) => ({
+  type: TestActionEnums.getAllTestsSuccess,
+  payload: {
+    isPending: false,
+    isSuccess: true,
+    isError: false,
+    tests,
+  },
+});
 
-export const getAllTestsError = createAction<ITestStateContext>(
-  TestActionEnums.getAllTestsError,
-  () => ({ isPending: false, isSuccess: false, isError: true })
-);
+export const getAllTestsError = () => ({
+  type: TestActionEnums.getAllTestsError,
+  payload: { isPending: false, isSuccess: false, isError: true },
+});
 
-//Get Test with Questions
-export const getTestWithQuestionsPending = createAction<ITestStateContext>(
-  TestActionEnums.getTestWithQuestionsPending,
-  () => ({ isPending: true, isSuccess: false, isError: false })
-);
+// Get Test with Questions actions
+export const getTestWithQuestionsPending = () => ({
+  type: TestActionEnums.getTestWithQuestionsPending,
+  payload: { isPending: true, isSuccess: false, isError: false },
+});
 
-export const getTestWithQuestionsSuccess = createAction<
-  ITestStateContext,
-  IcreateTest
->(TestActionEnums.getTestWithQuestionsSuccess, (test: IcreateTest) => ({
-  isPending: false,
-  isSuccess: true,
-  isError: false,
-  test,
-}));
-
-export const getTestWithQuestionsError = createAction<ITestStateContext>(
-  TestActionEnums.getTestWithQuestionsError,
-  () => ({ isPending: false, isSuccess: false, isError: true })
-);
-
-//Update Test
-
-export const updateTestPending = createAction<ITestStateContext>(
-  TestActionEnums.updateTestPending,
-  () => ({ isPending: true, isSuccess: false, isError: false })
-);
-
-export const updateTestSuccess = createAction<ITestStateContext, IcreateTest>(
-  TestActionEnums.updateTestSuccess,
-  (test: IcreateTest) => ({
+export const getTestWithQuestionsSuccess = (test: TestWithQuestionsDto) => ({
+  type: TestActionEnums.getTestWithQuestionsSuccess,
+  payload: {
     isPending: false,
     isSuccess: true,
     isError: false,
     test,
-  })
-);
+  },
+});
 
-export const updateTestError = createAction<ITestStateContext>(
-  TestActionEnums.updateTestError,
-  () => ({ isPending: false, isSuccess: false, isError: true })
-);
+export const getTestWithQuestionsError = () => ({
+  type: TestActionEnums.getTestWithQuestionsError,
+  payload: { isPending: false, isSuccess: false, isError: true },
+});
 
-//Delete Test
+// Update Test actions
+export const updateTestPending = () => ({
+  type: TestActionEnums.updateTestPending,
+  payload: { isPending: true, isSuccess: false, isError: false },
+});
 
-export const deleteTestPending = createAction<ITestStateContext>(
-  TestActionEnums.deleteTestPending,
-  () => ({ isPending: true, isSuccess: false, isError: false })
-);
-
-export const deleteTestSuccess = createAction<ITestStateContext, IcreateTest>(
-  TestActionEnums.deleteTestSuccess,
-  (test: IcreateTest) => ({
+export const updateTestSuccess = (test: TestDto) => ({
+  type: TestActionEnums.updateTestSuccess,
+  payload: {
     isPending: false,
     isSuccess: true,
     isError: false,
     test,
-  })
-);
+  },
+});
 
-export const deleteTestError = createAction<ITestStateContext>(
-  TestActionEnums.deleteTestError,
-  () => ({ isPending: false, isSuccess: false, isError: true })
-);
+export const updateTestError = () => ({
+  type: TestActionEnums.updateTestError,
+  payload: { isPending: false, isSuccess: false, isError: true },
+});
 
-//Submit Test Answer
+// Delete Test actions
+export const deleteTestPending = () => ({
+  type: TestActionEnums.deleteTestPending,
+  payload: { isPending: true, isSuccess: false, isError: false },
+});
 
-export const submitTestAnswerPending = createAction<ITestStateContext>(
-  TestActionEnums.submitTestAnswerPending,
-  () => ({ isPending: true, isSuccess: false, isError: false })
-);
+export const deleteTestSuccess = () => ({
+  type: TestActionEnums.deleteTestSuccess,
+  payload: {
+    isPending: false,
+    isSuccess: true,
+    isError: false,
+  },
+});
 
-export const submitTestAnswerSuccess = createAction<
-  ITestStateContext,
-  IcreateTest
->(TestActionEnums.submitTestAnswerSuccess, (test: IcreateTest) => ({
-  isPending: false,
-  isSuccess: true,
-  isError: false,
-  test,
-}));
+export const deleteTestError = () => ({
+  type: TestActionEnums.deleteTestError,
+  payload: { isPending: false, isSuccess: false, isError: true },
+});
 
-export const submitTestAnswerError = createAction<ITestStateContext>(
-  TestActionEnums.submitTestAnswerError,
-  () => ({ isPending: false, isSuccess: false, isError: true })
-);
+// Submit Test Answer actions
+export const submitTestAnswerPending = () => ({
+  type: TestActionEnums.submitTestAnswerPending,
+  payload: { isPending: true, isSuccess: false, isError: false },
+});
+
+export const submitTestAnswerSuccess = (
+  submissionResult: SubmitTestResultDto
+) => ({
+  type: TestActionEnums.submitTestAnswerSuccess,
+  payload: {
+    isPending: false,
+    isSuccess: true,
+    isError: false,
+    submissionResult,
+  },
+});
+
+export const submitTestAnswerError = () => ({
+  type: TestActionEnums.submitTestAnswerError,
+  payload: { isPending: false, isSuccess: false, isError: true },
+});
