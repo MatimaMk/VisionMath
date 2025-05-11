@@ -51,6 +51,21 @@ export default function DashboardLayout({
               icon: <UploadOutlined />,
               label: <Link href="/educator-dashboard/test">Test</Link>,
             },
+            {
+              key: "/educator-dashboard/createTest",
+              icon: <UploadOutlined />,
+              label: (
+                <Link href="/educator-dashboard/createTest">Create Test</Link>
+              ),
+            },
+
+            {
+              key: "/student-dashboard/writeTest",
+              icon: <UploadOutlined />,
+              label: (
+                <Link href="/educator-dashboard/writeTest">write Test</Link>
+              ),
+            },
           ]}
         />
       </Sider>

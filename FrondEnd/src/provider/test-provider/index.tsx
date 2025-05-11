@@ -3,10 +3,14 @@
 import { useContext, useReducer } from "react";
 import { TestReducer } from "./reducer";
 import {
-  IcreateTest,
+  CreateTestDto,
+  UpdateTestDto,
+  SubmitTestAnswersDto,
   INITIAL_STATE,
   TestActionContext,
   TestStateContext,
+  ITestStateContext,
+  ITestActionContext,
 } from "./context";
 import { getAxiosInstace } from "@/utils/axioaInstance";
 import {
@@ -34,78 +38,79 @@ export const TestProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, dispatch] = useReducer(TestReducer, INITIAL_STATE);
   const instance = getAxiosInstace();
 
-  const createTest = async (test: IcreateTest) => {
+  const createTest = async (test: CreateTestDto) => {
     dispatch(createTestPending());
-    const endpoint = "endpoitn url";
-    return instance
-      .post(endpoint, test)
-      .then((response) => dispatch(createTestSuccess(response.data)))
-      .catch((error) => {
-        console.error("Error creating Content:", error);
-        dispatch(createTestError());
-      });
+    try {
+      const response = await instance.post("/Test/Create", test);
+      dispatch(createTestSuccess(response.data.result));
+    } catch (error) {
+      console.error("Error creating test:", error);
+      dispatch(createTestError());
+    }
   };
 
   const getAllTests = async () => {
     dispatch(getAllTestsPending());
-    const endpoint = "endpoitn url";
-    return instance
-      .get(endpoint)
-      .then((response) => dispatch(getAllTestsSuccess(response.data)))
-      .catch((error) => {
-        console.error("Error creating Content:", error);
-        dispatch(getAllTestsError());
+    try {
+      const response = await instance.get("/Test/GetAll", {
+        params: {
+          MaxResultCount: 100,
+          SkipCount: 0,
+        },
       });
+      dispatch(getAllTestsSuccess(response.data.result.items));
+    } catch (error) {
+      console.error("Error fetching tests:", error);
+      dispatch(getAllTestsError());
+    }
   };
 
   const getTestWithQuestions = async (id: string) => {
     dispatch(getTestWithQuestionsPending());
-    const endpoint = `endpoitn url${id}`;
-    return instance
-
-      .get(endpoint)
-      .then((response) => dispatch(getTestWithQuestionsSuccess(response.data)))
-      .catch((error) => {
-        console.error("Error creating Content:", error);
-        dispatch(getTestWithQuestionsError());
+    try {
+      const response = await instance.get("/Test/GetTestWithQuestions", {
+        params: { id },
       });
+      dispatch(getTestWithQuestionsSuccess(response.data.result));
+    } catch (error) {
+      console.error("Error fetching test with questions:", error);
+      dispatch(getTestWithQuestionsError());
+    }
   };
 
-  const updateTest = async (content: IcreateTest) => {
+  const updateTest = async (test: UpdateTestDto) => {
     dispatch(updateTestPending());
-    const endpoint = "endpoitn url";
-    return instance
-      .put(endpoint, content)
-      .then((response) => dispatch(updateTestSuccess(response.data)))
-      .catch((error) => {
-        console.error("Error creating Content:", error);
-        dispatch(updateTestError());
-      });
+    try {
+      const response = await instance.put("/Test/Update", test);
+      dispatch(updateTestSuccess(response.data.result));
+    } catch (error) {
+      console.error("Error updating test:", error);
+      dispatch(updateTestError());
+    }
   };
 
   const deleteTest = async (id: string) => {
     dispatch(deleteTestPending());
-    const endpoint = `endpoitn url${id}`;
-    return instance
-
-      .delete(endpoint)
-      .then((response) => dispatch(deleteTestSuccess(response.data)))
-      .catch((error) => {
-        console.error("Error creating Content:", error);
-        dispatch(deleteTestError());
+    try {
+      await instance.delete("/Test/Delete", {
+        params: { id },
       });
+      dispatch(deleteTestSuccess());
+    } catch (error) {
+      console.error("Error deleting test:", error);
+      dispatch(deleteTestError());
+    }
   };
 
-  const submitTestAnswers = async () => {
+  const submitTestAnswers = async (answers: SubmitTestAnswersDto) => {
     dispatch(submitTestAnswerPending());
-    const endpoint = "endpoitn url";
-    return instance
-      .post(endpoint)
-      .then((response) => dispatch(submitTestAnswerSuccess(response.data)))
-      .catch((error) => {
-        console.error("Error creating Content:", error);
-        dispatch(submitTestAnswerError());
-      });
+    try {
+      const response = await instance.post("Test/SubmitTestAnswers", answers);
+      dispatch(submitTestAnswerSuccess(response.data.result));
+    } catch (error) {
+      console.error("Error submitting test answers:", error);
+      dispatch(submitTestAnswerError());
+    }
   };
 
   return (
@@ -126,14 +131,15 @@ export const TestProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export const useTestState = () => {
+export const useTestState = (): ITestStateContext => {
   const context = useContext(TestStateContext);
   if (!context) {
     throw new Error("useTestState must be used within a TestProvider");
   }
   return context;
 };
-export const useTestAction = () => {
+
+export const useTestAction = (): ITestActionContext => {
   const context = useContext(TestActionContext);
   if (!context) {
     throw new Error("useTestAction must be used within a TestProvider");
