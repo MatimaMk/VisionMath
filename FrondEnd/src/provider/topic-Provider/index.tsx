@@ -25,7 +25,7 @@ export const TopicProvider = ({ children }: { children: React.ReactNode }) => {
   // Create Topic
   const createTopic = async (Topic: ITopic) => {
     dispatch(createTopicPending());
-    const endpoint = ``;
+    const endpoint = `/TopicService/Create`;
     await instance
       .post(endpoint, Topic)
       .then((response) => {
@@ -44,7 +44,8 @@ export const TopicProvider = ({ children }: { children: React.ReactNode }) => {
     await instance
       .get(endpoint)
       .then((response) => {
-        dispatch(getTopicsSuccess(response.data));
+        console.log("response:", response);
+        dispatch(getTopicsSuccess(response.data.result.items));
         return response.data;
       })
       .catch((error) => {
@@ -60,7 +61,7 @@ export const TopicProvider = ({ children }: { children: React.ReactNode }) => {
     await instance
       .get(endpoint)
       .then((response) => {
-        dispatch(getTopicsSuccess(response.data));
+        dispatch(getTopicsSuccess(response.data.result.items));
         return response.data;
       })
       .catch((error) => {
@@ -76,7 +77,7 @@ export const TopicProvider = ({ children }: { children: React.ReactNode }) => {
     await instance
       .put(endpoint, Topic)
       .then((response) => {
-        dispatch(createTopicSuccess(response.data));
+        dispatch(createTopicSuccess(response.data.result.items));
       })
       .catch((error) => {
         console.error(error);
@@ -90,7 +91,7 @@ export const TopicProvider = ({ children }: { children: React.ReactNode }) => {
     await instance
       .delete(endpoint)
       .then((response) => {
-        dispatch(createTopicSuccess(response.data));
+        dispatch(createTopicSuccess(response.data.result.items));
       })
       .catch((error) => {
         console.error(error);

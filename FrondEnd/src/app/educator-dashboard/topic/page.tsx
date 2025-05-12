@@ -9,7 +9,6 @@ import {
   Input,
   Space,
   Select,
-  DatePicker,
   Popconfirm,
   message,
 } from "antd";
@@ -23,7 +22,7 @@ import {
 import { ColumnsType } from "antd/es/table";
 import { difficultLevel } from "@/enums/difficultLevel";
 import styles from "./styles/topicsManagement.module.css";
-import dayjs from "dayjs";
+
 import { useTopicActions, useTopicState } from "@/provider/topic-Provider";
 import { ITopic } from "@/provider/topic-Provider/context";
 
@@ -63,16 +62,29 @@ const TopicsManagement: React.FC = () => {
     }
   }, [isPending, isSuccess, isError]);
 
+  // Filter the topics based on search text manually instead of relying on Table's built-in filtering
+  const filteredTopics = React.useMemo(() => {
+    // Ensure topics is an array before attempting to filter
+    const topicsArray = Array.isArray(topics) ? topics : [];
+
+    if (!searchText || topicsArray.length === 0) {
+      return topicsArray;
+    }
+
+    return topicsArray.filter(
+      (topic) =>
+        topic &&
+        topic.topicTittle &&
+        topic.topicTittle.toLowerCase().includes(searchText.toLowerCase())
+    );
+  }, [topics, searchText]);
+
   const columns: ColumnsType<ITopic> = [
     {
       title: "Title",
       dataIndex: "topicTittle",
       key: "topicTittle",
-      filteredValue: searchText ? [searchText] : null,
-      onFilter: (value, record) =>
-        record.topicTittle
-          ?.toLowerCase()
-          .includes(String(value).toLowerCase()) || false,
+      // Remove the filteredValue and onFilter properties
       sorter: (a, b) =>
         (a.topicTittle || "").localeCompare(b.topicTittle || ""),
     },
@@ -86,15 +98,12 @@ const TopicsManagement: React.FC = () => {
       title: "Estimated Time",
       dataIndex: "estimatedTime",
       key: "estimatedTime",
-      render: (estimatedTime: Date) =>
-        estimatedTime ? dayjs(estimatedTime).format("YYYY-MM-DD HH:mm") : "-",
+      render: (time: number) => (time ? `${time}` : "-"),
       sorter: (a, b) => {
-        if (!a.estimatedTime) return -1;
-        if (!b.estimatedTime) return 1;
-        return (
-          new Date(a.estimatedTime).getTime() -
-          new Date(b.estimatedTime).getTime()
-        );
+        if (a.estimatedTime === undefined || a.estimatedTime === null)
+          return -1;
+        if (b.estimatedTime === undefined || b.estimatedTime === null) return 1;
+        return a.estimatedTime - b.estimatedTime;
       },
     },
     {
@@ -156,7 +165,7 @@ const TopicsManagement: React.FC = () => {
     form.setFieldsValue({
       topicTittle: topic.topicTittle,
       description: topic.description,
-      estimatedTime: topic.estimatedTime ? dayjs(topic.estimatedTime) : null,
+      estimatedTime: topic.estimatedTime, // Now expecting a number
       difficultLevel: topic.difficultLevel,
     });
     setIsModalVisible(true);
@@ -172,9 +181,7 @@ const TopicsManagement: React.FC = () => {
     form.validateFields().then((values) => {
       const topicData: ITopic = {
         ...values,
-        estimatedTime: values.estimatedTime
-          ? values.estimatedTime.toDate()
-          : undefined,
+        // No conversion needed for estimatedTime as it's already a number
       };
 
       if (editingTopic && editingTopic.id) {
@@ -220,8 +227,10 @@ const TopicsManagement: React.FC = () => {
 
       <Table
         columns={columns}
-        dataSource={topics || []}
-        rowKey="id"
+        dataSource={filteredTopics} // Use the filtered topics
+        rowKey={(record) =>
+          record?.id || Math.random().toString(36).substr(2, 9)
+        } // Ensure valid row keys
         loading={isPending}
         pagination={{
           defaultPageSize: 10,
@@ -229,6 +238,7 @@ const TopicsManagement: React.FC = () => {
           pageSizeOptions: ["10", "20", "50"],
         }}
         className={styles.topicsTable}
+        // expandable={false} // Completely disable expandable functionality
       />
 
       <Modal
@@ -265,16 +275,23 @@ const TopicsManagement: React.FC = () => {
 
           <Form.Item
             name="estimatedTime"
-            label="Estimated Time"
+            label="Estimated Time (hours)"
             rules={[
-              { required: true, message: "Please select an estimated time" },
+              { required: true, message: "Please enter the estimated time" },
+              {
+                type: "number",
+                min: 0,
+                message: "Time must be a positive number",
+              },
             ]}
           >
-            <DatePicker
-              showTime
-              format="YYYY-MM-DD HH:mm"
-              placeholder="Select date and time"
-              className={styles.datePicker}
+            <Input
+              type="number"
+              placeholder="Enter estimated time in hours"
+              suffix="hours"
+              min={0}
+              step={0.5}
+              className={styles.timeInput}
             />
           </Form.Item>
 

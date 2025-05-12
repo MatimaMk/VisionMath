@@ -1,0 +1,100 @@
+.questionFormContainer {
+  width: 100%;
+}
+
+.questionFormCard {
+  margin-bottom: 24px;
+}
+
+.formRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.formHalfWidth {
+  flex: 1;
+  min-width: 200px;
+}
+
+.optionRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.optionTextInput {
+  flex: 1;
+  margin-bottom: 0 !important;
+}
+
+.optionCorrectSwitch {
+  margin-bottom: 0 !important;
+  width: 80px;
+}
+
+.questionsList {
+  margin-top: 24px;
+}
+
+.questionsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.questionsCollapse {
+  background-color: white;
+}
+
+.questionHeader {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  max-width: 80%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.questionDetails {
+  padding: 8px;
+}
+
+.questionInfo {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 16px;
+}
+
+.optionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.optionItem {
+  padding: 8px;
+  border-radius: 4px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.correctOption {
+  background-color: rgba(82, 196, 26, 0.1);
+}
+
+@media (max-width: 768px) {
+  .formRow {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .questionInfo {
+    flex-direction: column;
+    gap: 4px;
+  }
+}

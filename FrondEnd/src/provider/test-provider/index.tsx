@@ -54,11 +54,13 @@ export const TestProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       const response = await instance.get("/Test/GetAll", {
         params: {
-          MaxResultCount: 100,
+          MaxResultCount: 20,
           SkipCount: 0,
         },
       });
+      console.log("Response data:", response);
       dispatch(getAllTestsSuccess(response.data.result.items));
+      console.log("after the response", response.data.result.items);
     } catch (error) {
       console.error("Error fetching tests:", error);
       dispatch(getAllTestsError());
@@ -71,7 +73,7 @@ export const TestProvider = ({ children }: { children: React.ReactNode }) => {
       const response = await instance.get("/Test/GetTestWithQuestions", {
         params: { id },
       });
-      dispatch(getTestWithQuestionsSuccess(response.data.result));
+      dispatch(getTestWithQuestionsSuccess(response.data.result.items));
     } catch (error) {
       console.error("Error fetching test with questions:", error);
       dispatch(getTestWithQuestionsError());
@@ -106,7 +108,7 @@ export const TestProvider = ({ children }: { children: React.ReactNode }) => {
     dispatch(submitTestAnswerPending());
     try {
       const response = await instance.post("Test/SubmitTestAnswers", answers);
-      dispatch(submitTestAnswerSuccess(response.data.result));
+      dispatch(submitTestAnswerSuccess(response.data.result.items));
     } catch (error) {
       console.error("Error submitting test answers:", error);
       dispatch(submitTestAnswerError());

@@ -12,6 +12,15 @@ export interface QuestionOptionDto {
   orderNumber: number;
   explanation?: string;
 }
+export interface TestDetailsFormValues {
+  title: string;
+  description: string;
+  timeLimitMinutes: string;
+  difficultyLevel: difficultLevel;
+  passingPercentage: number;
+  attempts?: number;
+  instructions: string;
+}
 
 export interface QuestionDto {
   id?: string;
@@ -26,12 +35,12 @@ export interface TestDto {
   id?: string;
   title: string;
   description: string;
-  timeLimitMinutes: number;
+  timeLimitMinutes: string;
   difficultyLevel: difficultLevel;
   passingPercentage: number;
   instructions: string;
-  attempts: number;
-  questions?: QuestionDto[]; // Make this optional to avoid type issues
+  attempts?: number;
+  questions?: QuestionDto[];
   creationTime?: string;
 }
 
@@ -54,7 +63,7 @@ export interface CreateQuestionDto {
 export interface CreateTestDto {
   title: string;
   description: string;
-  timeLimitMinutes: number;
+  timeLimitMinutes: string;
   difficultyLevel: difficultLevel;
   passingPercentage: number;
   instructions: string;
@@ -83,7 +92,7 @@ export interface UpdateTestDto {
   id?: string;
   title: string;
   description: string;
-  timeLimitMinutes: number;
+  timeLimitMinutes: string;
   difficultyLevel: difficultLevel;
   passingPercentage: number;
   instructions: string;

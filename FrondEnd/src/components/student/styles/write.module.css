@@ -1,0 +1,152 @@
+.testTakerContainer {
+  width: 100%;
+}
+
+.testHeader {
+  margin-bottom: 24px;
+}
+
+.testContent {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.questionSection {
+  flex: 1;
+  min-width: 500px;
+}
+
+.progressSection {
+  width: 300px;
+}
+
+.questionCard {
+  width: 100%;
+}
+
+.questionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.questionContent {
+  min-height: 300px;
+}
+
+.questionText {
+  font-size: 16px;
+  margin-bottom: 24px;
+}
+
+.answerSection {
+  margin: 16px 0;
+}
+
+.optionsGroup {
+  width: 100%;
+}
+
+.optionRadio {
+  padding: 8px;
+  margin: 8px 0;
+  width: 100%;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+.optionRadio:hover {
+  background-color: #f5f5f5;
+}
+
+.textAnswer {
+  width: 100%;
+}
+
+.numericAnswer {
+  width: 100%;
+}
+
+.questionNavigation {
+  display: flex;
+  justify-content: space-between;
+}
+
+.progressCard {
+  width: 100%;
+}
+
+.timerSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.questionNavSection {
+  margin-top: 16px;
+}
+
+.questionBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.questionBadge {
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.questionBadge:hover {
+  transform: scale(1.1);
+}
+
+.currentBadge {
+  position: relative;
+}
+
+.currentBadge::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 2px solid #1890ff;
+  border-radius: 50%;
+  top: 0;
+  left: 0;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .testContent {
+    flex-direction: column;
+  }
+
+  .questionSection {
+    min-width: 100%;
+    order: 2;
+  }
+
+  .progressSection {
+    width: 100%;
+    order: 1;
+  }
+}

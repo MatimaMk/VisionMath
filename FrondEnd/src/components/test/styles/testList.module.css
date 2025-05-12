@@ -1,110 +1,65 @@
 .testListContainer {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
+  width: 100%;
 }
 
-.listCard {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border-radius: 8px;
-}
-
-.listHeader {
+.testListHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
-  flex-wrap: wrap;
-  gap: 16px;
 }
 
-.searchInput {
-  width: 250px;
-}
-
-.errorMessage {
-  background-color: #fff2f0;
-  border: 1px solid #ffccc7;
-  padding: 16px;
-  border-radius: 8px;
-  text-align: center;
-  margin-bottom: 16px;
-  color: #cf1322;
-}
-
-.testTable {
-  margin-bottom: 16px;
-}
-
-.testTable .ant-table-tbody > tr:hover > td {
-  background-color: #fafafa;
-}
-
-.emptyState {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 60px 0;
-  text-align: center;
-}
-
-.emptyIcon {
-  font-size: 48px;
-  margin-bottom: 16px;
-  color: #d9d9d9;
-}
-
-.emptyState button {
+.testsGrid {
   margin-top: 16px;
 }
 
-.loading {
+.testCard {
+  height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  transition: all 0.3s;
+}
+
+.testCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.testInfo {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.testTags {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.loadingContainer {
+  display: flex;
   justify-content: center;
-  min-height: 300px;
-  gap: 16px;
-}
-
-.loadingContent {
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 16px;
+  height: 300px;
 }
 
-.spinner {
-  border: 4px solid rgba(0, 0, 0, 0.1);
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border-left-color: #1890ff;
-  animation: spin 1s linear infinite;
+.errorCard {
+  padding: 24px;
 }
 
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.errorActions {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
 }
 
-/* Responsive styles */
 @media (max-width: 768px) {
-  .listHeader {
+  .testListHeader {
     flex-direction: column;
     align-items: flex-start;
-  }
-
-  .searchInput {
-    width: 100%;
-  }
-
-  .testTable {
-    overflow-x: auto;
+    gap: 16px;
   }
 }

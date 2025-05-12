@@ -7,7 +7,7 @@ export interface ITopic {
   id?: string;
   topicTittle?: string;
   description?: string;
-  estimatedTime?: Date;
+  estimatedTime?: number;
   difficultLevel?: difficultLevel;
 }
 
