@@ -66,6 +66,15 @@ export default function DashboardLayout({
                 <Link href="/educator-dashboard/writeTest">write Test</Link>
               ),
             },
+            {
+              key: "/student-dashboard/viewTest",
+              icon: <UploadOutlined />,
+              label: (
+                <Link href="/educator-dashboard/viewTest">
+                  Student View Test
+                </Link>
+              ),
+            },
           ]}
         />
       </Sider>

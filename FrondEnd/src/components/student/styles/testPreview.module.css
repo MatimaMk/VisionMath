@@ -1,0 +1,76 @@
+.testPreviewCard {
+  width: 100%;
+}
+
+.overviewTab {
+  padding: 16px 0;
+}
+
+.questionsTab {
+  padding: 16px 0;
+}
+
+.creationTime {
+  margin-top: 16px;
+  text-align: right;
+}
+
+.questionHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.questionText {
+  flex: 1;
+  min-width: 200px;
+}
+
+.questionMeta {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.questionDetails {
+  padding: 8px;
+}
+
+.optionItem {
+  padding: 8px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.optionItem:hover {
+  background-color: #f5f5f5;
+}
+
+.optionContent {
+  width: 100%;
+}
+
+.optionHeader {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.optionExplanation {
+  margin-top: 8px;
+  font-size: 0.9em;
+}
+
+@media (max-width: 768px) {
+  .questionHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .questionMeta {
+    margin-left: 0;
+    margin-top: 8px;
+  }
+}

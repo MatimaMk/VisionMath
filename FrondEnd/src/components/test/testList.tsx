@@ -1,242 +1,333 @@
-import React, { useEffect, useState } from "react";
+"use client";
+
+import { useEffect, useState } from "react";
 import {
-  Table,
+  Typography,
+  Card,
   Button,
+  Input,
+  Row,
+  Col,
+  Spin,
+  Empty,
   Tag,
   Space,
-  Modal,
-  message,
-  Card,
-  Input,
-  Typography,
 } from "antd";
-import type { ColumnsType } from "antd/es/table";
 import {
-  EditOutlined,
-  DeleteOutlined,
   EyeOutlined,
-  FileTextOutlined,
-  PlusOutlined,
-  SearchOutlined,
+  ClockCircleOutlined,
+  BookOutlined,
+  PercentageOutlined,
+  ReloadOutlined,
 } from "@ant-design/icons";
-
 import { useRouter } from "next/navigation";
-import { useTestAction, useTestState } from "@/provider/test-provider";
-import { TestDto } from "@/provider/test-provider/context";
-import { difficultLevel } from "@/enums/difficultLevel";
+import { useTestState, useTestAction } from "@/provider/test-provider";
+import axios from "axios";
 import styles from "./styles/testList.module.css";
+import { TestDto } from "@/provider/test-provider/context";
 
-const { Title, Text } = Typography;
+const { Title, Text, Paragraph } = Typography;
+const { Search } = Input;
+const { Meta } = Card;
 
-const TestList: React.FC = () => {
+// Define an interface for API response structure
+interface ApiResponse {
+  result?: {
+    items?: TestDto[];
+    totalCount?: number;
+  };
+  items?: TestDto[];
+}
+
+const StudentTestList = () => {
   const router = useRouter();
-  const { getAllTests, deleteTest } = useTestAction();
-  const { tests, isPending, isSuccess, isError } = useTestState();
+  const { tests, isPending, isError } = useTestState();
+  const { getAllTests } = useTestAction();
   const [searchText, setSearchText] = useState("");
+  const [filteredTests, setFilteredTests] = useState<TestDto[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [directFetchedTests, setDirectFetchedTests] = useState<TestDto[]>([]);
 
   useEffect(() => {
+    const fetchTestsDirectly = async () => {
+      try {
+        setLoading(true);
+        setError(false);
+        console.log("Fetching tests directly from API");
+
+        // Replace with your actual API endpoint
+        const response = await axios.get(
+          "https://localhost:44311/api/services/app/Test/GetAll",
+          {
+            params: {
+              MaxResultCount: 20,
+              SkipCount: 0,
+            },
+          }
+        );
+
+        console.log("Direct API response:", response.data.result?.items);
+
+        // Extract tests from the response
+        let testsArray: TestDto[] = [];
+        const data = response.data as ApiResponse;
+
+        if (data) {
+          if (data.result && Array.isArray(data.result.items)) {
+            testsArray = data.result.items;
+          } else if (Array.isArray(data.items)) {
+            testsArray = data.items;
+          } else if (Array.isArray(data)) {
+            // If the data itself is an array
+            testsArray = data as unknown as TestDto[];
+          }
+        }
+
+        console.log("Directly fetched tests:", testsArray);
+        setDirectFetchedTests(testsArray);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error directly fetching tests:", error);
+        setError(true);
+        setLoading(false);
+      }
+    };
+
+    console.log("Fetching tests through provider");
     getAllTests();
+
+    fetchTestsDirectly();
   }, [getAllTests]);
 
   useEffect(() => {
-    if (isSuccess && (!tests || tests.length === 0)) {
-      getAllTests();
-    }
-  }, [isSuccess, tests, getAllTests]);
+    console.log("Raw tests data:", tests);
+    let testsArray: TestDto[] = [];
 
-  const handleDelete = (id: string) => {
-    Modal.confirm({
-      title: "Are you sure you want to delete this test?",
-      content:
-        "This action cannot be undone. All test data including results will be permanently removed.",
-      okText: "Yes, Delete",
-      okType: "danger",
-      cancelText: "Cancel",
-      onOk: () => {
-        deleteTest(id);
-        message.success("Test deleted successfully");
-      },
-    });
+    if (tests) {
+      // First check if tests is already an array
+      if (Array.isArray(tests)) {
+        testsArray = tests;
+      }
+      // If tests is not an array, assume it's an object with specific structure
+      else if (typeof tests === "object") {
+        const testsObj = tests as unknown as ApiResponse;
+
+        if (testsObj.result && Array.isArray(testsObj.result.items)) {
+          testsArray = testsObj.result.items;
+        } else if (Array.isArray((testsObj as { items?: TestDto[] }).items)) {
+          testsArray = (testsObj as { items: TestDto[] }).items;
+        }
+      }
+    }
+
+    console.log("Extracted tests array from provider:", testsArray);
+
+    // If provider data exists, use it
+    if (testsArray && testsArray.length > 0) {
+      filterTests(testsArray);
+    }
+    // Otherwise, use directly fetched data
+    else if (directFetchedTests && directFetchedTests.length > 0) {
+      console.log("Using directly fetched tests data instead of provider");
+      filterTests(directFetchedTests);
+    }
+  }, [tests, searchText, directFetchedTests]);
+
+  // Filter tests based on search text
+  const filterTests = (testsToFilter: TestDto[]) => {
+    const filtered = testsToFilter.filter(
+      (test) =>
+        test.title?.toLowerCase().includes(searchText.toLowerCase()) ||
+        test.description?.toLowerCase().includes(searchText.toLowerCase())
+    );
+
+    console.log("Filtered tests:", filtered.length);
+    setFilteredTests(filtered);
   };
 
-  const getDifficultyColor = (level: difficultLevel) => {
-    switch (level) {
-      case difficultLevel.Easy:
-        return "green";
-      case difficultLevel.Medium:
-        return "blue";
-      case difficultLevel.Difficult:
-        return "orange";
-      default:
-        return "default";
+  // Handle clicking on a test to view/take it
+  const handleViewTest = (testId: string) => {
+    console.log("Navigating to test with ID:", testId);
+    router.push(`/educator-dashboard/writeTest/id=${testId}`);
+  };
+
+  // Safe version that checks for null/undefined before navigation
+  const handleViewTestSafe = (testId: string | undefined) => {
+    if (testId) {
+      handleViewTest(testId);
+    } else {
+      console.warn("Attempted to navigate with null or undefined test ID");
     }
   };
 
-  const getDifficultyLabel = (level: difficultLevel) => {
-    switch (level) {
-      case difficultLevel.Easy:
-        return "Easy";
-      case difficultLevel.Medium:
-        return "Medium";
-      case difficultLevel.Difficult:
-        return "Difficult";
-      default:
-        return "Unknown";
-    }
+  const handleSearchChange = (value: string) => {
+    setSearchText(value);
   };
 
-  const filteredTests = tests?.filter(
-    (test) =>
-      test.title?.toLowerCase().includes(searchText.toLowerCase()) ||
-      test.description?.toLowerCase().includes(searchText.toLowerCase())
-  );
+  const handleRetry = () => {
+    getAllTests();
+    // Also retry direct fetch
+    setLoading(true);
+    const fetchTestsDirectly = async () => {
+      try {
+        const response = await axios.get("/api/Test/GetAll", {
+          params: {
+            MaxResultCount: 20,
+            SkipCount: 0,
+          },
+        });
 
-  const columns: ColumnsType<TestDto> = [
-    {
-      title: "Test Title",
-      dataIndex: "title",
-      key: "title",
-      render: (text: string) => <Text strong>{text}</Text>,
-    },
-    {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
-      ellipsis: true,
-    },
-    {
-      title: "Difficulty",
-      dataIndex: "difficultyLevel",
-      key: "difficultyLevel",
-      render: (level: difficultLevel) => (
-        <Tag color={getDifficultyColor(level)}>{getDifficultyLabel(level)}</Tag>
-      ),
-    },
-    {
-      title: "Time Limit",
-      dataIndex: "timeLimitMinutes",
-      key: "timeLimitMinutes",
-      render: (mins: number) => `${mins} minutes`,
-    },
-    {
-      title: "Passing %",
-      dataIndex: "passingPercentage",
-      key: "passingPercentage",
-      render: (percent: number) => `${percent}%`,
-    },
-    {
-      title: "Questions",
-      dataIndex: "questions",
-      key: "questions",
-      render: (questions: TestDto["questions"]) => questions?.length || 0,
-    },
-    {
-      title: "Attempts",
-      dataIndex: "attempts",
-      key: "attempts",
-      render: (attempts: number) => attempts || 0,
-    },
-    {
-      title: "Actions",
-      key: "actions",
-      render: (_, record: TestDto) => (
-        <Space size="small">
-          <Button
-            type="text"
-            icon={<EyeOutlined />}
-            onClick={() => router.push(`/tests/${record.id}`)}
-            title="Preview Test"
-          />
-          <Button
-            type="text"
-            icon={<EditOutlined />}
-            onClick={() => router.push(`/tests/${record.id}/edit`)}
-            title="Edit Test"
-          />
-          <Button
-            type="text"
-            icon={<FileTextOutlined />}
-            onClick={() => router.push(`/tests/${record.id}/results`)}
-            title="View Results"
-          />
-          <Button
-            type="text"
-            danger
-            icon={<DeleteOutlined />}
-            onClick={() => handleDelete(record.id!)}
-            title="Delete Test"
-          />
-        </Space>
-      ),
-    },
-  ];
+        let testsArray: TestDto[] = [];
+        const data = response.data as ApiResponse;
 
-  if (isPending && !tests?.length) {
+        if (data) {
+          if (data.result && Array.isArray(data.result.items)) {
+            testsArray = data.result.items;
+          } else if (Array.isArray(data.items)) {
+            testsArray = data.items;
+          } else if (Array.isArray(data)) {
+            testsArray = data as unknown as TestDto[];
+          }
+        }
+
+        setDirectFetchedTests(testsArray);
+        setLoading(false);
+        setError(false);
+      } catch (error) {
+        console.error("Error retrying direct fetch:", error);
+        setError(true);
+        setLoading(false);
+      }
+    };
+
+    fetchTestsDirectly();
+  };
+
+  const getDifficultyTag = (level: number) => {
+    const colors = ["green", "blue", "orange"];
+    const texts = ["Easy", "Medium", "Hard"];
+
     return (
-      <div className={styles.loading}>
-        <div className={styles.loadingContent}>
-          <div className={styles.spinner}></div>
-          <p>Loading tests...</p>
-        </div>
+      <Tag color={colors[level] || "blue"}>{texts[level] || "Unknown"}</Tag>
+    );
+  };
+
+  if (isPending || loading) {
+    return (
+      <div className={styles.loadingContainer}>
+        <Spin size="large" tip="Loading tests..." />
       </div>
     );
   }
 
+  if ((isError || error) && (!filteredTests || filteredTests.length === 0)) {
+    return (
+      <Card className={styles.errorCard}>
+        <Empty
+          description="Failed to load tests. Please try again later."
+          image={Empty.PRESENTED_IMAGE_SIMPLE}
+        />
+        <div className={styles.errorActions}>
+          <Button
+            type="primary"
+            icon={<ReloadOutlined />}
+            onClick={handleRetry}
+          >
+            Retry
+          </Button>
+        </div>
+      </Card>
+    );
+  }
+
+  if (!filteredTests || filteredTests.length === 0) {
+    return (
+      <Card className={styles.errorCard}>
+        <Empty
+          description="No tests available at the moment."
+          image={Empty.PRESENTED_IMAGE_SIMPLE}
+        />
+      </Card>
+    );
+  }
+
+  // Tests are available, show them in card format
   return (
     <div className={styles.testListContainer}>
-      <Card className={styles.listCard}>
-        <div className={styles.listHeader}>
-          <Title level={2}>Your Tests</Title>
-          <Space>
-            <Input
-              placeholder="Search tests..."
-              prefix={<SearchOutlined />}
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-              className={styles.searchInput}
-            />
-            <Button
-              type="primary"
-              icon={<PlusOutlined />}
-              onClick={() => router.push("/tests/create")}
-            >
-              Create New Test
-            </Button>
-          </Space>
-        </div>
-
-        {isError && (
-          <div className={styles.errorMessage}>
-            Failed to load tests. Please try again later.
-          </div>
-        )}
-
-        <Table<TestDto>
-          dataSource={filteredTests}
-          columns={columns}
-          rowKey="id"
-          loading={isPending}
-          pagination={{ pageSize: 10 }}
-          className={styles.testTable}
+      <div className={styles.testListHeader}>
+        <Title level={4}>Available Tests</Title>
+        <Search
+          placeholder="Search tests..."
+          allowClear
+          onSearch={handleSearchChange}
+          onChange={(e) => handleSearchChange(e.target.value)}
+          style={{ width: 250 }}
         />
+      </div>
 
-        {tests?.length === 0 && !isPending && (
-          <div className={styles.emptyState}>
-            <FileTextOutlined className={styles.emptyIcon} />
-            <Text>&quot;not created yet&quot;</Text>
-
-            <Button
-              type="primary"
-              icon={<PlusOutlined />}
-              onClick={() => router.push("/tests/create")}
+      <Row gutter={[16, 16]} className={styles.testsGrid}>
+        {filteredTests.map((test) => (
+          <Col xs={24} sm={12} md={8} lg={6} key={test.id}>
+            <Card
+              hoverable
+              className={styles.testCard}
+              onClick={() => handleViewTestSafe(test.id)}
+              actions={[
+                <Button
+                  key="take"
+                  type="primary"
+                  icon={<EyeOutlined />}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleViewTestSafe(test.id);
+                  }}
+                >
+                  Take Test
+                </Button>,
+              ]}
             >
-              Create Your First Test
-            </Button>
-          </div>
-        )}
-      </Card>
+              <Meta
+                title={<Text strong>{test.title}</Text>}
+                description={
+                  <Space
+                    direction="vertical"
+                    size="small"
+                    style={{ width: "100%" }}
+                  >
+                    <Paragraph ellipsis={{ rows: 2 }}>
+                      {test.description}
+                    </Paragraph>
+                    <div className={styles.testInfo}>
+                      <Space>
+                        <ClockCircleOutlined /> {test.timeLimitMinutes} mins
+                      </Space>
+                      <Space>
+                        <PercentageOutlined /> {test.passingPercentage}% to pass
+                      </Space>
+                    </div>
+                    <div className={styles.testTags}>
+                      {getDifficultyTag(test.difficultyLevel)}
+                      {test.questions && (
+                        <Tag color="blue">
+                          <BookOutlined /> {test.questions.length || 0}{" "}
+                          Questions
+                        </Tag>
+                      )}
+                    </div>
+                  </Space>
+                }
+              />
+            </Card>
+          </Col>
+        ))}
+      </Row>
+
+      {filteredTests.length === 0 && searchText && (
+        <Empty description="No tests match your search criteria." />
+      )}
     </div>
   );
 };
 
-export default TestList;
+export default StudentTestList;

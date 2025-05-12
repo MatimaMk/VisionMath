@@ -1,460 +1,388 @@
-import React, { useState, useEffect } from "react";
+"use client";
+
+import { useState, useEffect } from "react";
 import {
   Card,
-  Steps,
+  Typography,
+  Radio,
+  Space,
   Button,
   Progress,
-  Radio,
   Input,
-  Typography,
-  Space,
-  Modal,
-  Alert,
   InputNumber,
+  Divider,
+  Alert,
+  Badge,
+  Statistic,
+  Modal,
 } from "antd";
 import {
   ClockCircleOutlined,
-  QuestionCircleOutlined,
-  SendOutlined,
+  LeftOutlined,
+  RightOutlined,
+  CheckOutlined,
 } from "@ant-design/icons";
-import { useTestAction, useTestState } from "@/provider/test-provider";
 import {
-  SubmitAnswerDto,
+  TestWithQuestionsDto,
+  QuestionDto,
   SubmitTestAnswersDto,
+  SubmitAnswerDto,
 } from "@/provider/test-provider/context";
 import { questionTypes } from "@/enums/questionTypes";
-import styles from "./styles/testView.module.css";
+import styles from "./styles/testPreview.module.css";
 
-const { Step } = Steps;
 const { Title, Text, Paragraph } = Typography;
+const { TextArea } = Input;
+const { Countdown } = Statistic;
 
-interface StudentAnswer {
-  questionId: string;
-  selectedOptionId?: string;
-  textAnswer?: string;
-  numericAnswer?: number;
+interface TestTakerProps {
+  test: TestWithQuestionsDto;
+  onSubmit: (answers: SubmitTestAnswersDto) => Promise<void>;
+  isSubmitting: boolean;
 }
 
-interface TestViewProps {
-  testId: string;
-}
+const TestTaker = ({ test, onSubmit, isSubmitting }: TestTakerProps) => {
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [answers, setAnswers] = useState<SubmitAnswerDto[]>([]);
+  const [countdown, setCountdown] = useState<number | null>(null);
+  const [showConfirmSubmit, setShowConfirmSubmit] = useState(false);
+  const [hasTimeExpired, setHasTimeExpired] = useState(false);
 
-const TestView: React.FC<TestViewProps> = ({ testId }) => {
-  const { getTestWithQuestions, submitTestAnswers } = useTestAction();
-  const { test, isPending, submissionResult } = useTestState();
-
-  const [currentStep, setCurrentStep] = useState(0);
-  const [answers, setAnswers] = useState<StudentAnswer[]>([]);
-  const [timeRemaining, setTimeRemaining] = useState<number>(0);
-  const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
-  const [testSubmitted, setTestSubmitted] = useState(false);
-
-  // Initialize test
   useEffect(() => {
-    getTestWithQuestions(testId);
-  }, [testId, getTestWithQuestions]);
-
-  // Setup answers structure and timer when test loads
-  useEffect(() => {
-    if (test && test.questions && test.questions.length > 0) {
-      // Initialize answers
-      const initialAnswers = test.questions
-        .filter((q) => q.id !== undefined)
-        .map((q) => ({
-          questionId: q.id as string,
-          selectedOptionId: undefined,
-          textAnswer: "",
-          numericAnswer: undefined,
-        }));
+    // Initialize empty answers for all questions
+    if (test && test.questions) {
+      const initialAnswers = test.questions.map((question) => ({
+        questionId: question.id as string,
+        selectedOptionId: undefined,
+        textAnswer: undefined,
+        numericAnswer: undefined,
+      }));
       setAnswers(initialAnswers);
 
-      // Set time limit
+      // Set countdown timer
       if (test.timeLimitMinutes) {
-        setTimeRemaining(test.timeLimitMinutes * 60);
+        const timeLimit = parseInt(test.timeLimitMinutes) * 60 * 1000; // Convert to milliseconds
+        setCountdown(Date.now() + timeLimit);
       }
     }
   }, [test]);
 
-  // Timer effect with handleSubmitTest dependency
-  useEffect(() => {
-    if (timeRemaining > 0 && !testSubmitted) {
-      const timer = setTimeout(() => {
-        setTimeRemaining((prev) => prev - 1);
-      }, 1000);
+  const currentQuestion = test?.questions?.[currentQuestionIndex];
 
-      return () => clearTimeout(timer);
-    } else if (timeRemaining === 0 && !testSubmitted) {
-      handleSubmitTest();
-    }
-  }, [timeRemaining, testSubmitted]); // Added handleSubmitTest as dependency would be better but creates warning
-
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
-  };
-
+  // Improved type safety by specifying the exact types for different question types
+  // Updated to handle null values from InputNumber
   const handleAnswerChange = (
-    questionIndex: number,
-    questionType: questionTypes,
-    value: string | number | undefined
+    value: string | number | null | undefined,
+    type: questionTypes
   ) => {
-    const updatedAnswers = [...answers];
+    const newAnswers = [...answers];
 
-    switch (questionType) {
-      case questionTypes.MultipleChoice:
-      case questionTypes.TrueFalse:
-        updatedAnswers[questionIndex].selectedOptionId = value as string;
-        break;
-      case questionTypes.Algebraic:
-        updatedAnswers[questionIndex].textAnswer = value as string;
-        break;
-      case questionTypes.Numeric:
-        updatedAnswers[questionIndex].numericAnswer = value as number;
-        break;
+    if (
+      type === questionTypes.MultipleChoice ||
+      type === questionTypes.TrueFalse
+    ) {
+      // For multiple choice/true-false, value is a string (option ID)
+      newAnswers[currentQuestionIndex].selectedOptionId = value as string;
+    } else if (type === questionTypes.FillInTheBlank) {
+      // For fill in the blank, value is a string (text answer)
+      newAnswers[currentQuestionIndex].textAnswer = value as string;
+    } else if (type === questionTypes.Numeric) {
+      // For numeric, value is a number or null (from InputNumber component)
+      newAnswers[currentQuestionIndex].numericAnswer =
+        value === null ? undefined : (value as number);
     }
 
-    setAnswers(updatedAnswers);
+    setAnswers(newAnswers);
   };
 
-  const isQuestionAnswered = (index: number) => {
-    const answer = answers[index];
-    if (!answer) return false;
-
-    const question = test?.questions?.[index];
-    if (!question) return false;
-
-    switch (question.questionType) {
-      case questionTypes.MultipleChoice:
-      case questionTypes.TrueFalse:
-        return !!answer.selectedOptionId;
-      case questionTypes.Algebraic:
-        return !!answer.textAnswer?.trim();
-      case questionTypes.Numeric:
-        return (
-          answer.numericAnswer !== undefined && answer.numericAnswer !== null
-        );
-      default:
-        return false;
+  const handlePrevQuestion = () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(currentQuestionIndex - 1);
     }
   };
 
-  const getQuestionProgress = () => {
-    if (!answers.length) return 0;
-    const answered = answers.filter((_, i) => isQuestionAnswered(i)).length;
-    return Math.round((answered / answers.length) * 100);
-  };
-
-  const handleNext = () => {
-    if (currentStep < (test?.questions?.length || 0) - 1) {
-      setCurrentStep(currentStep + 1);
+  const handleNextQuestion = () => {
+    if (currentQuestionIndex < (test?.questions?.length || 0) - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
     }
-  };
-
-  const handlePrev = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
-
-  const handleConfirmSubmit = () => {
-    setIsConfirmModalVisible(true);
   };
 
   const handleSubmitTest = async () => {
-    setIsConfirmModalVisible(false);
-    setTestSubmitted(true);
-
-    // Format answers for backend
-    const submissionData: SubmitTestAnswersDto = {
-      testId: testId,
-      answers: answers.map(
-        (answer): SubmitAnswerDto => ({
-          questionId: answer.questionId,
-          selectedOptionId: answer.selectedOptionId,
-          textAnswer: answer.textAnswer,
-          numericAnswer: answer.numericAnswer,
-        })
-      ),
-    };
-
-    await submitTestAnswers(submissionData);
+    setShowConfirmSubmit(false);
+    if (test?.id) {
+      const submitData: SubmitTestAnswersDto = {
+        testId: test.id,
+        answers: answers.filter(
+          (answer) =>
+            answer.selectedOptionId ||
+            answer.textAnswer ||
+            answer.numericAnswer !== undefined
+        ),
+      };
+      await onSubmit(submitData);
+    }
   };
 
-  // If test is not loaded yet
-  if (isPending || !test) {
-    return (
-      <div className={styles.loading}>
-        <div className={styles.loadingContent}>
-          <div className={styles.spinner}></div>
-          <p>Loading test...</p>
-        </div>
-      </div>
-    );
-  }
+  const renderAnswerInput = (question: QuestionDto) => {
+    const answer = answers[currentQuestionIndex];
 
-  // Check if test has questions
-  if (!test.questions || test.questions.length === 0) {
+    switch (question.questionType) {
+      case questionTypes.MultipleChoice:
+        return (
+          <Radio.Group
+            onChange={(e) =>
+              handleAnswerChange(e.target.value, question.questionType)
+            }
+            value={answer?.selectedOptionId}
+            className={styles.optionsGroup}
+          >
+            <Space direction="vertical" style={{ width: "100%" }}>
+              {question.questionOptions?.map((option) => (
+                <Radio
+                  key={option.id}
+                  value={option.id}
+                  className={styles.optionRadio}
+                >
+                  {option.optionText}
+                </Radio>
+              ))}
+            </Space>
+          </Radio.Group>
+        );
+
+      case questionTypes.TrueFalse:
+        return (
+          <Radio.Group
+            onChange={(e) =>
+              handleAnswerChange(e.target.value, question.questionType)
+            }
+            value={answer?.selectedOptionId}
+            className={styles.optionsGroup}
+          >
+            <Space direction="vertical" style={{ width: "100%" }}>
+              {question.questionOptions?.map((option) => (
+                <Radio
+                  key={option.id}
+                  value={option.id}
+                  className={styles.optionRadio}
+                >
+                  {option.optionText}
+                </Radio>
+              ))}
+            </Space>
+          </Radio.Group>
+        );
+
+      case questionTypes.FillInTheBlank:
+        return (
+          <TextArea
+            placeholder="Type your answer here"
+            value={answer?.textAnswer}
+            onChange={(e) =>
+              handleAnswerChange(e.target.value, question.questionType)
+            }
+            className={styles.textAnswer}
+            autoSize={{ minRows: 2, maxRows: 4 }}
+          />
+        );
+
+      case questionTypes.Numeric:
+        return (
+          <InputNumber
+            placeholder="Enter your numeric answer"
+            value={answer?.numericAnswer}
+            onChange={(value) =>
+              handleAnswerChange(value, question.questionType)
+            }
+            className={styles.numericAnswer}
+          />
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  const countAnswered = () => {
+    return answers.filter(
+      (answer) =>
+        answer.selectedOptionId ||
+        answer.textAnswer ||
+        answer.numericAnswer !== undefined
+    ).length;
+  };
+
+  const handleCountdownFinish = () => {
+    setHasTimeExpired(true);
+    // Auto-submit on time expiry
+    setShowConfirmSubmit(true);
+  };
+
+  const renderQuestionCard = () => {
+    if (!currentQuestion) return null;
+
     return (
-      <div className={styles.loading}>
-        <div className={styles.loadingContent}>
-          <p>No questions available for this test.</p>
+      <Card className={styles.questionCard}>
+        <div className={styles.questionHeader}>
+          <Title level={5}>
+            Question {currentQuestionIndex + 1} of {test?.questions?.length}
+          </Title>
+          <Text type="secondary">Points: {currentQuestion.questionPoints}</Text>
+        </div>
+
+        <Divider />
+
+        <div className={styles.questionContent}>
+          <Paragraph className={styles.questionText}>
+            {currentQuestion.questionText}
+          </Paragraph>
+
+          <div className={styles.answerSection}>
+            {renderAnswerInput(currentQuestion)}
+          </div>
+        </div>
+
+        <Divider />
+
+        <div className={styles.questionNavigation}>
+          <Button
+            onClick={handlePrevQuestion}
+            disabled={currentQuestionIndex === 0}
+            icon={<LeftOutlined />}
+          >
+            Previous
+          </Button>
+
           <Button
             type="primary"
-            onClick={() => (window.location.href = "/student-dashboard")}
+            onClick={handleNextQuestion}
+            disabled={
+              currentQuestionIndex === (test?.questions?.length || 0) - 1
+            }
           >
-            Return to Dashboard
+            Next <RightOutlined />
           </Button>
         </div>
-      </div>
+      </Card>
     );
-  }
+  };
 
-  const currentQuestion = test.questions[currentStep];
-
-  // Render test submitted screen
-  if (testSubmitted && submissionResult) {
-    return (
-      <div className={styles.testView}>
-        <Card className={styles.testCard}>
-          <div className={styles.testSubmitted}>
-            <div className={styles.successIcon}>✓</div>
-            <Title level={2}>Test Submitted!</Title>
-            <div style={{ marginTop: 24 }}>
-              <Paragraph>
-                Your Score:{" "}
-                <Text strong>{submissionResult.percentage.toFixed(1)}%</Text>
-              </Paragraph>
-              <Paragraph>
-                Points:{" "}
-                <Text strong>
-                  {submissionResult.earnedPoints}/{submissionResult.totalPoints}
-                </Text>
-              </Paragraph>
-              <Paragraph>
-                Result:{" "}
-                <Text
-                  strong
-                  style={{
-                    color: submissionResult.passed ? "#52c41a" : "#f5222d",
-                  }}
-                >
-                  {submissionResult.passed ? "PASSED" : "FAILED"}
-                </Text>
-              </Paragraph>
-            </div>
-            <Button
-              type="primary"
-              size="large"
-              onClick={() => (window.location.href = "/dashboard")}
-              style={{ marginTop: 24 }}
-            >
-              Return to Dashboard
-            </Button>
-          </div>
-        </Card>
+  const renderProgressInfo = () => (
+    <Card className={styles.progressCard}>
+      <div className={styles.timerSection}>
+        <Text strong>
+          <ClockCircleOutlined /> Time Remaining:
+        </Text>
+        {countdown && (
+          <Countdown
+            value={countdown}
+            format="HH:mm:ss"
+            onFinish={handleCountdownFinish}
+          />
+        )}
       </div>
-    );
-  }
+
+      <Divider />
+
+      <div>
+        <Text strong>Progress:</Text>
+        <Progress
+          percent={Math.round(
+            (countAnswered() / (test?.questions?.length || 1)) * 100
+          )}
+          format={() => `${countAnswered()}/${test?.questions?.length}`}
+        />
+      </div>
+
+      <Divider />
+
+      <div className={styles.questionNavSection}>
+        <Text strong>Questions:</Text>
+        <div className={styles.questionBadges}>
+          {test?.questions?.map((_, index) => {
+            const isAnswered = !!(
+              answers[index]?.selectedOptionId ||
+              answers[index]?.textAnswer ||
+              answers[index]?.numericAnswer !== undefined
+            );
+
+            return (
+              <Badge
+                key={index}
+                count={index + 1}
+                className={`${styles.questionBadge} ${
+                  index === currentQuestionIndex ? styles.currentBadge : ""
+                }`}
+                style={{
+                  backgroundColor: isAnswered ? "#52c41a" : "#d9d9d9",
+                }}
+                onClick={() => setCurrentQuestionIndex(index)}
+              />
+            );
+          })}
+        </div>
+      </div>
+
+      <Divider />
+
+      <Button
+        type="primary"
+        block
+        icon={<CheckOutlined />}
+        onClick={() => setShowConfirmSubmit(true)}
+        disabled={countAnswered() === 0}
+      >
+        Submit Test
+      </Button>
+    </Card>
+  );
 
   return (
-    <div className={styles.testView}>
-      <Card className={styles.testCard}>
-        <div className={styles.testHeader}>
-          <div>
-            <Title level={2}>{test.title}</Title>
-            <Text type="secondary">{test.description}</Text>
-          </div>
+    <div className={styles.testTakerContainer}>
+      <div className={styles.testHeader}>
+        <Title level={3}>{test?.title}</Title>
+        <Text type="secondary">{test?.description}</Text>
+      </div>
 
-          <div className={styles.testMeta}>
-            <div className={styles.timer}>
-              <ClockCircleOutlined /> Time Remaining:{" "}
-              <Text strong>{formatTime(timeRemaining)}</Text>
-            </div>
+      {hasTimeExpired && (
+        <Alert
+          message="Time Expired"
+          description="Your time has expired. Please submit your test."
+          type="warning"
+          showIcon
+          style={{ marginBottom: 16 }}
+        />
+      )}
 
-            <div className={styles.progress}>
-              <Text>Progress: </Text>
-              <Progress
-                percent={getQuestionProgress()}
-                size="small"
-                status="active"
-                className={styles.progressBar}
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className={styles.testContent}>
-          <div className={styles.sidebar}>
-            <Steps
-              direction="vertical"
-              current={currentStep}
-              onChange={(step) => setCurrentStep(step)}
-              className={styles.questionSteps}
-            >
-              {test.questions.map((q, index) => (
-                <Step
-                  key={q.id}
-                  title={`Question ${index + 1}`}
-                  description={
-                    isQuestionAnswered(index) ? "Answered" : "Unanswered"
-                  }
-                  status={isQuestionAnswered(index) ? "finish" : "wait"}
-                  icon={<QuestionCircleOutlined />}
-                />
-              ))}
-            </Steps>
-          </div>
-
-          <div className={styles.questionContainer}>
-            {currentQuestion && (
-              <div className={styles.question}>
-                <div className={styles.questionHeader}>
-                  <Title level={4}>Question {currentStep + 1}</Title>
-                  <Text type="secondary">
-                    {currentQuestion.questionPoints} points
-                  </Text>
-                </div>
-
-                <div className={styles.questionText}>
-                  <Paragraph strong>{currentQuestion.questionText}</Paragraph>
-                </div>
-
-                <div className={styles.answerOptions}>
-                  {currentQuestion.questionType ===
-                    questionTypes.MultipleChoice && (
-                    <Radio.Group
-                      onChange={(e) =>
-                        handleAnswerChange(
-                          currentStep,
-                          currentQuestion.questionType,
-                          e.target.value
-                        )
-                      }
-                      value={answers[currentStep]?.selectedOptionId}
-                      className={styles.radioGroup}
-                    >
-                      <Space
-                        direction="vertical"
-                        className={styles.optionsSpace}
-                      >
-                        {currentQuestion.questionOptions?.map((option) => (
-                          <Radio key={option.id} value={option.id}>
-                            {option.optionText}
-                          </Radio>
-                        ))}
-                      </Space>
-                    </Radio.Group>
-                  )}
-
-                  {currentQuestion.questionType === questionTypes.TrueFalse && (
-                    <Radio.Group
-                      onChange={(e) =>
-                        handleAnswerChange(
-                          currentStep,
-                          currentQuestion.questionType,
-                          e.target.value
-                        )
-                      }
-                      value={answers[currentStep]?.selectedOptionId}
-                      className={styles.radioGroup}
-                    >
-                      <Space
-                        direction="vertical"
-                        className={styles.optionsSpace}
-                      >
-                        {currentQuestion.questionOptions?.map((option) => (
-                          <Radio key={option.id} value={option.id}>
-                            {option.optionText}
-                          </Radio>
-                        ))}
-                      </Space>
-                    </Radio.Group>
-                  )}
-
-                  {currentQuestion.questionType === questionTypes.Numeric && (
-                    <Input.TextArea
-                      rows={4}
-                      placeholder="Type your answer here..."
-                      value={answers[currentStep]?.textAnswer}
-                      onChange={(e) =>
-                        handleAnswerChange(
-                          currentStep,
-                          currentQuestion.questionType,
-                          e.target.value
-                        )
-                      }
-                      className={styles.textAnswer}
-                    />
-                  )}
-
-                  {currentQuestion.questionType === questionTypes.Numeric && (
-                    <InputNumber
-                      style={{ width: "100%" }}
-                      placeholder="Enter numeric answer"
-                      value={answers[currentStep]?.numericAnswer}
-                      onChange={(value) =>
-                        handleAnswerChange(
-                          currentStep,
-                          currentQuestion.questionType,
-                          value ?? undefined
-                        )
-                      }
-                    />
-                  )}
-                </div>
-              </div>
-            )}
-
-            <div className={styles.navigationButtons}>
-              <Button onClick={handlePrev} disabled={currentStep === 0}>
-                Previous
-              </Button>
-
-              {currentStep < (test.questions?.length || 0) - 1 ? (
-                <Button type="primary" onClick={handleNext}>
-                  Next
-                </Button>
-              ) : (
-                <Button
-                  type="primary"
-                  icon={<SendOutlined />}
-                  onClick={handleConfirmSubmit}
-                >
-                  Submit Test
-                </Button>
-              )}
-            </div>
-          </div>
-        </div>
-      </Card>
+      <div className={styles.testContent}>
+        <div className={styles.questionSection}>{renderQuestionCard()}</div>
+        <div className={styles.progressSection}>{renderProgressInfo()}</div>
+      </div>
 
       <Modal
         title="Submit Test"
-        open={isConfirmModalVisible}
+        open={showConfirmSubmit}
         onOk={handleSubmitTest}
-        onCancel={() => setIsConfirmModalVisible(false)}
+        onCancel={() => setShowConfirmSubmit(false)}
         okText="Yes, Submit"
-        cancelText="Continue Testing"
+        confirmLoading={isSubmitting}
       >
-        <Alert
-          message="Are you sure you want to submit your test?"
-          description={
-            <>
-              <p>
-                You have completed{" "}
-                {answers.filter((_, i) => isQuestionAnswered(i)).length} out of{" "}
-                {test.questions?.length} questions.
-              </p>
-              <p>Once submitted, you cannot return to this test.</p>
-            </>
-          }
-          type="warning"
-          showIcon
-        />
+        <p>Are you sure you want to submit your test?</p>
+        <p>
+          You have answered {countAnswered()} out of {test?.questions?.length}{" "}
+          questions.
+        </p>
+        {countAnswered() < (test?.questions?.length || 0) && (
+          <Alert
+            message="Warning"
+            description="You have unanswered questions. Once submitted, you cannot change your answers."
+            type="warning"
+            showIcon
+          />
+        )}
       </Modal>
     </div>
   );
 };
 
-export default TestView;
+export default TestTaker;

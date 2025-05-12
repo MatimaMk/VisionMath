@@ -10,7 +10,7 @@ import {
 } from "@ant-design/icons";
 import StudentTestList from "@/components/test/testList";
 import { useTestState, useTestAction } from "@/provider/test-provider";
-import styles from "./styles/test.module.css";
+import styles from "./styles/viewTest.module.css";
 
 const { Title, Text } = Typography;
 
