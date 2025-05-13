@@ -18,6 +18,7 @@ import { SaveOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
 import {
   CreateTestDto,
   CreateQuestionDto,
+  UpdateTestDto,
   TestDetailsFormValues,
 } from "@/provider/test-provider/context";
 import { difficultLevel } from "@/enums/difficultLevel";
@@ -30,27 +31,30 @@ const { Option } = Select;
 const { TextArea } = Input;
 
 interface TestFormProps {
-  initialValues?: Partial<CreateTestDto>;
-  onSubmit: (values: CreateTestDto) => Promise<void>;
+  initialValues?: Partial<CreateTestDto | UpdateTestDto>;
+  onSubmit: (values: CreateTestDto | UpdateTestDto) => Promise<void>;
   isSubmitting: boolean;
 }
 
 const TestForm = ({ initialValues, onSubmit, isSubmitting }: TestFormProps) => {
-  const [form] = Form.useForm();
+  const [form] = Form.useForm<TestDetailsFormValues>();
   const [currentStep, setCurrentStep] = useState(0);
-  const [testData, setTestData] = useState<Partial<CreateTestDto>>(
-    initialValues || {}
-  );
+  const [testData, setTestData] = useState<
+    Partial<CreateTestDto | UpdateTestDto>
+  >(initialValues || {});
   const [questions, setQuestions] = useState<CreateQuestionDto[]>(
-    initialValues?.questions || []
+    initialValues?.questions ? [...initialValues.questions] : []
   );
 
   // Update form when initialValues change
   useEffect(() => {
     if (initialValues) {
-      form.setFieldsValue(initialValues);
+      form.setFieldsValue(initialValues as TestDetailsFormValues);
       setTestData(initialValues);
-      setQuestions(initialValues.questions || []);
+
+      if (initialValues.questions) {
+        setQuestions([...initialValues.questions]);
+      }
     }
   }, [initialValues, form]);
 
@@ -70,8 +74,41 @@ const TestForm = ({ initialValues, onSubmit, isSubmitting }: TestFormProps) => {
   ];
 
   const handleTestDetailsSubmit = (values: TestDetailsFormValues) => {
-    setTestData(values);
+    // Format the timeLimitMinutes as a datetime string if it's not already
+    // We need to send a properly formatted ISO string for the backend
+    const formattedValues = {
+      ...values,
+      // Ensure timeLimitMinutes is a proper ISO datetime string
+      timeLimitMinutes: formatTimeLimit(values.timeLimitMinutes),
+    };
+
+    setTestData(formattedValues);
     setCurrentStep(1);
+  };
+
+  // Helper function to format the time limit as a proper datetime string
+  const formatTimeLimit = (timeLimit: string): string => {
+    // If the input is just a number (minutes), convert it to a duration
+    // and then create a datetime value
+    if (!isNaN(Number(timeLimit))) {
+      // Create a duration in minutes
+      const durationInMinutes = Number(timeLimit);
+
+      // Create an ISO format datetime string
+      // Using current date/time + duration in minutes to represent the time limit
+      const date = new Date();
+      date.setMinutes(date.getMinutes() + durationInMinutes);
+      return date.toISOString();
+    }
+
+    // If it's already a proper datetime string, return as is
+    // Check if it's already a valid ISO string
+    if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(timeLimit)) {
+      return timeLimit;
+    }
+
+    // Default fallback - return as is
+    return timeLimit;
   };
 
   const handleQuestionsUpdate = (updatedQuestions: CreateQuestionDto[]) => {
@@ -81,16 +118,26 @@ const TestForm = ({ initialValues, onSubmit, isSubmitting }: TestFormProps) => {
   const handleFinalSubmit = async () => {
     try {
       // Combine test data with questions
-      const finalData: CreateTestDto = {
-        ...(testData as CreateTestDto),
+      const finalData = {
+        ...testData,
         questions: questions,
-      };
+      } as CreateTestDto | UpdateTestDto;
+
+      // Ensure timeLimitMinutes is properly formatted before submission
+      if (
+        typeof finalData.timeLimitMinutes === "string" &&
+        !finalData.timeLimitMinutes.includes("T")
+      ) {
+        finalData.timeLimitMinutes = formatTimeLimit(
+          finalData.timeLimitMinutes
+        );
+      }
 
       await onSubmit(finalData);
-      message.success("Test created successfully!");
+      message.success("Test saved successfully!");
     } catch (error) {
-      message.error("Failed to create test");
-      console.error("Error creating test:", error);
+      message.error("Failed to save test");
+      console.error("Error saving test:", error);
     }
   };
 
@@ -105,7 +152,7 @@ const TestForm = ({ initialValues, onSubmit, isSubmitting }: TestFormProps) => {
       <Form
         form={form}
         layout="vertical"
-        initialValues={testData}
+        initialValues={testData as TestDetailsFormValues}
         onFinish={handleTestDetailsSubmit}
       >
         <Form.Item
@@ -133,8 +180,13 @@ const TestForm = ({ initialValues, onSubmit, isSubmitting }: TestFormProps) => {
             label="Time Limit (minutes)"
             rules={[{ required: true, message: "Please set a time limit" }]}
             className={styles.halfWidth}
+            tooltip="Enter the time limit in minutes. This will be converted to a proper datetime format."
           >
-            <Input type="number" min={1} placeholder="e.g., 60" />
+            <InputNumber
+              min={1}
+              placeholder="e.g., 60"
+              style={{ width: "100%" }}
+            />
           </Form.Item>
 
           <Form.Item
@@ -164,7 +216,7 @@ const TestForm = ({ initialValues, onSubmit, isSubmitting }: TestFormProps) => {
               min={1}
               max={100}
               formatter={(value) => `${value}%`}
-              // parser={(value) => (value ? value.replace("%", "") : "")}
+              //  parser={(value) => (value ? value.replace("%", "") : "")}
               style={{ width: "100%" }}
             />
           </Form.Item>
@@ -247,12 +299,19 @@ const TestForm = ({ initialValues, onSubmit, isSubmitting }: TestFormProps) => {
         </div>
         <div className={styles.reviewItem}>
           <Text strong>Time Limit:</Text>{" "}
-          <Text>{testData.timeLimitMinutes} minutes</Text>
+          <Text>
+            {typeof testData.timeLimitMinutes === "string" &&
+            testData.timeLimitMinutes.includes("T")
+              ? `${parseInt(testData.timeLimitMinutes)} minutes`
+              : `${testData.timeLimitMinutes} minutes`}
+          </Text>
         </div>
         <div className={styles.reviewItem}>
           <Text strong>Difficulty:</Text>{" "}
           <Text>
-            {difficultLevel[testData.difficultyLevel as difficultLevel]}
+            {testData.difficultyLevel !== undefined
+              ? difficultLevel[testData.difficultyLevel as difficultLevel]
+              : "Not set"}
           </Text>
         </div>
         <div className={styles.reviewItem}>

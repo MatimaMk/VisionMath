@@ -46,7 +46,7 @@ export interface TestDto {
 
 // Create DTOs
 export interface CreateQuestionOptionDto {
-  optionText: string;
+  optionText?: string;
   isCorrect: boolean;
   orderNumber: number;
   explanation?: string;

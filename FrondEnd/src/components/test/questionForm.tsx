@@ -24,10 +24,7 @@ import {
   CheckCircleOutlined,
   CloseCircleOutlined,
 } from "@ant-design/icons";
-import {
-  CreateQuestionDto,
-  QuestionOptionDto,
-} from "@/provider/test-provider/context";
+import { CreateQuestionDto } from "@/provider/test-provider/context";
 import { questionTypes } from "@/enums/questionTypes";
 import styles from "./styles/questionForm.module.css";
 
@@ -39,18 +36,8 @@ interface QuestionFormProps {
   questions: CreateQuestionDto[];
   onChange: (questions: CreateQuestionDto[]) => void;
 }
-
-// Create interface for form values to avoid using any
-interface QuestionFormValues {
-  questionText: string;
-  questionType: questionTypes;
-  questionPoints: number;
-  solutionExplanation: string;
-  questionOptions: QuestionOptionDto[];
-}
-
 const QuestionForm = ({ questions, onChange }: QuestionFormProps) => {
-  const [form] = Form.useForm<QuestionFormValues>();
+  const [form] = Form.useForm<CreateQuestionDto>();
   const [editingQuestion, setEditingQuestion] =
     useState<CreateQuestionDto | null>(null);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
@@ -59,13 +46,46 @@ const QuestionForm = ({ questions, onChange }: QuestionFormProps) => {
   );
 
   const handleAddQuestion = () => {
-    form.validateFields().then((values: QuestionFormValues) => {
+    form.validateFields().then((values: CreateQuestionDto) => {
+      const processedValues = { ...values };
+
+      if (values.questionType === questionTypes.TrueFalse) {
+        // Ensure the True/False options have proper text values
+        processedValues.questionOptions = values.questionOptions.map(
+          (option, index) => ({
+            ...option,
+            optionText: index === 0 ? "True" : "False",
+            orderNumber: index,
+          })
+        );
+      }
+
+      // For fill in the blank and numeric, ensure there's at least one option for the correct answer
+      if (
+        values.questionType === questionTypes.FillInTheBlank ||
+        values.questionType === questionTypes.Numeric
+      ) {
+        if (
+          !processedValues.questionOptions ||
+          processedValues.questionOptions.length === 0
+        ) {
+          // Create a default option with the entered text
+          processedValues.questionOptions = [
+            {
+              optionText: values.questionOptions?.[0]?.optionText || "",
+              isCorrect: true,
+              orderNumber: 0,
+            },
+          ];
+        }
+      }
+
       const newQuestion: CreateQuestionDto = {
-        questionText: values.questionText,
-        questionType: values.questionType,
-        questionPoints: values.questionPoints,
-        solutionExplanation: values.solutionExplanation,
-        questionOptions: values.questionOptions || [],
+        questionText: processedValues.questionText,
+        questionType: processedValues.questionType,
+        questionPoints: processedValues.questionPoints,
+        solutionExplanation: processedValues.solutionExplanation,
+        questionOptions: processedValues.questionOptions || [],
       };
 
       let updatedQuestions: CreateQuestionDto[];
@@ -113,6 +133,34 @@ const QuestionForm = ({ questions, onChange }: QuestionFormProps) => {
 
   const handleTypeChange = (value: questionTypes) => {
     setQuestionType(value);
+
+    // Reset the options when changing question type
+    const currentValues = form.getFieldsValue();
+
+    // Initialize with appropriate default options based on question type
+    if (value === questionTypes.TrueFalse) {
+      form.setFieldsValue({
+        ...currentValues,
+        questionOptions: [
+          { optionText: "True", isCorrect: false, orderNumber: 0 },
+          { optionText: "False", isCorrect: false, orderNumber: 1 },
+        ],
+      });
+    } else if (
+      value === questionTypes.FillInTheBlank ||
+      value === questionTypes.Numeric
+    ) {
+      form.setFieldsValue({
+        ...currentValues,
+        questionOptions: [{ optionText: "", isCorrect: true, orderNumber: 0 }],
+      });
+    } else {
+      // Multiple choice - start with one empty option
+      form.setFieldsValue({
+        ...currentValues,
+        questionOptions: [{ optionText: "", isCorrect: false, orderNumber: 0 }],
+      });
+    }
   };
 
   const renderOptionFields = () => {
@@ -163,6 +211,8 @@ const QuestionForm = ({ questions, onChange }: QuestionFormProps) => {
                       options.forEach((option, index) => {
                         if (option && typeof option === "object") {
                           option.isCorrect = index === e.target.value;
+                          // Ensure optionText is set correctly
+                          option.optionText = index === 0 ? "True" : "False";
                         }
                       });
                       form.setFieldsValue({ questionOptions: options });
@@ -174,10 +224,12 @@ const QuestionForm = ({ questions, onChange }: QuestionFormProps) => {
                 </Radio.Group>
               </Form.Item>
 
+              {/* Hidden form items to ensure optionText is included in form data */}
               {fields.map((field) => (
                 <Form.Item
                   key={field.key}
                   name={[field.name, "optionText"]}
+                  initialValue={field.name === 0 ? "True" : "False"}
                   hidden
                 />
               ))}
