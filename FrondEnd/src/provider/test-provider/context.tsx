@@ -133,6 +133,7 @@ export interface ITestStateContext {
   test?: TestDto; // Changed from TestWithQuestionsDto to TestDto
   tests?: TestDto[];
   submissionResult?: SubmitTestResultDto;
+  testWithQuestions?: TestWithQuestionsDto;
 }
 
 // Initial state with default values

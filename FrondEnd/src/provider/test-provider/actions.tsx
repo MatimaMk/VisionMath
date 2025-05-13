@@ -1,6 +1,12 @@
 "use client";
 
-import { TestDto, TestWithQuestionsDto, SubmitTestResultDto } from "./context";
+import { createAction } from "redux-actions";
+import {
+  TestDto,
+  TestWithQuestionsDto,
+  SubmitTestResultDto,
+  ITestStateContext,
+} from "./context";
 
 export enum TestActionEnums {
   //create Test
@@ -82,15 +88,20 @@ export const getTestWithQuestionsPending = () => ({
   payload: { isPending: true, isSuccess: false, isError: false },
 });
 
-export const getTestWithQuestionsSuccess = (test: TestWithQuestionsDto) => ({
-  type: TestActionEnums.getTestWithQuestionsSuccess,
-  payload: {
-    isPending: false,
-    isSuccess: true,
-    isError: false,
-    test,
-  },
-});
+export const getTestWithQuestionsSuccess = createAction<
+  ITestStateContext,
+  TestWithQuestionsDto
+>(
+  TestActionEnums.getTestWithQuestionsSuccess,
+  (testWithQuestions: TestWithQuestionsDto) => {
+    return {
+      isPending: false,
+      isSuccess: true,
+      isError: false,
+      testWithQuestions,
+    };
+  }
+);
 
 export const getTestWithQuestionsError = () => ({
   type: TestActionEnums.getTestWithQuestionsError,
