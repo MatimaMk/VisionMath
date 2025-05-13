@@ -11,6 +11,7 @@ import {
   TestStateContext,
   ITestStateContext,
   ITestActionContext,
+  TestWithQuestionsDto,
 } from "./context";
 import { getAxiosInstace } from "@/utils/axioaInstance";
 import {
@@ -70,16 +71,23 @@ export const TestProvider = ({ children }: { children: React.ReactNode }) => {
   const getTestWithQuestions = async (id: string) => {
     dispatch(getTestWithQuestionsPending());
     try {
+      console.log("getTestWithQuestions received ID:", id);
+
+      // Use axios params object to ensure proper URL encoding
       const response = await instance.get("/Test/GetTestWithQuestions", {
-        params: { id },
+        params: {
+          id: id, // Using lowercase 'id' as parameter name
+        },
       });
-      dispatch(getTestWithQuestionsSuccess(response.data.result.items));
+
+      const testWithQuestions: TestWithQuestionsDto = response.data.result;
+      console.log("Test with questions response:", response.data);
+      dispatch(getTestWithQuestionsSuccess(testWithQuestions));
     } catch (error) {
       console.error("Error fetching test with questions:", error);
       dispatch(getTestWithQuestionsError());
     }
   };
-
   const updateTest = async (test: UpdateTestDto) => {
     dispatch(updateTestPending());
     try {

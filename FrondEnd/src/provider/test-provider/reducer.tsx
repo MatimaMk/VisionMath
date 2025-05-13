@@ -2,6 +2,7 @@
 
 import { handleActions } from "redux-actions";
 import { INITIAL_STATE, ITestStateContext } from "./context";
+import { TestActionEnums } from "./actions";
 
 export const TestReducer = handleActions<ITestStateContext, ITestStateContext>(
   {
@@ -33,20 +34,20 @@ export const TestReducer = handleActions<ITestStateContext, ITestStateContext>(
       ...action.payload,
     }),
 
-    //Get Test with Questions
-    getTestWithQuestionsPending: (state, action) => ({
+    [TestActionEnums.getTestWithQuestionsPending]: (state, action) => ({
       ...state,
       ...action.payload,
     }),
-    getTestWithQuestionsSuccess: (state, action) => ({
+    [TestActionEnums.getTestWithQuestionsSuccess]: (state, action) => {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
+    [TestActionEnums.getTestWithQuestionsError]: (state, action) => ({
       ...state,
       ...action.payload,
     }),
-    getTestWithQuestionsError: (state, action) => ({
-      ...state,
-      ...action.payload,
-    }),
-
     //Update Test
     updateTestPending: (state, action) => ({
       ...state,

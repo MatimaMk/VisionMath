@@ -21,16 +21,43 @@ import {
 } from "@/provider/test-provider/context";
 import TestPreview from "@/components/student/testPreview";
 import TestTaker from "@/components/student/writeTest";
-import styles from "./styles/writeTest.module.css";
+import styles from "../styles/writeTest.module.css";
 
 const { Title, Text, Paragraph } = Typography;
 
 export default function TakeTestPage() {
   const params = useParams();
   const router = useRouter();
-  const testId = params.id as string;
 
-  const { test, isPending, isError, submissionResult } = useTestState();
+  const rawId = params.id as string;
+  console.log("Raw id from params:", rawId);
+
+  //  Decode any URL encoding
+  let decodedId = rawId;
+  try {
+    decodedId = decodeURIComponent(rawId);
+    console.log("Decoded id:", decodedId);
+  } catch (e) {
+    console.error("Error decoding ID:", e);
+  }
+
+  // extracting just the UUID when it still contains "id=" or similar prefix,
+  let testId = decodedId;
+  const uuidRegex =
+    /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
+  const match = decodedId.match(uuidRegex);
+
+  if (match) {
+    testId = match[0];
+    console.log("Extracted UUID:", testId);
+  } else if (decodedId.includes("=")) {
+    // Fallback:  splitting by equals
+    testId = decodedId.split("=").pop() || "";
+    console.log("Extracted ID after equals sign:", testId);
+  }
+
+  const { testWithQuestions, isPending, isError, submissionResult } =
+    useTestState();
   const { getTestWithQuestions, submitTestAnswers } = useTestAction();
 
   const [isTestStarted, setIsTestStarted] = useState(false);
@@ -38,10 +65,13 @@ export default function TakeTestPage() {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (!testId) {
+    console.log("Using cleaned testId for API call:", testId);
+
+    if (testId && testWithQuestions === undefined) {
+      console.log("Calling getTestWithQuestions with clean ID:", testId);
       getTestWithQuestions(testId);
     }
-  }, [testId, getTestWithQuestions]);
+  }, [testId, testWithQuestions, getTestWithQuestions]);
 
   const handleStartTest = () => {
     setShowStartConfirm(true);
@@ -69,7 +99,7 @@ export default function TakeTestPage() {
     }
   };
 
-  const typedTest = test as TestWithQuestionsDto | undefined;
+  const typedTest = testWithQuestions as TestWithQuestionsDto | undefined;
 
   if (isPending) {
     return (
