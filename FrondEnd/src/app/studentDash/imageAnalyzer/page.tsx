@@ -1,12 +1,12 @@
 "use client";
 import React, { useState, useRef } from "react";
 import { analyzeMathImage } from "../../../components/aiServices/ImageAnalyzer";
-import "./styles/imageAnalyzer.module.css";
+import styles from "./styles/imageAnalyzer.module.css";
 
 const MathSolverPage: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [prompt] = useState<string>("");
+  const [prompt, setPrompt] = useState<string>("");
   const [analysis, setAnalysis] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -29,7 +29,7 @@ const MathSolverPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Reseting of the states
+    // Reset states
     setError("");
     setAnalysis("");
 
@@ -60,28 +60,46 @@ const MathSolverPage: React.FC = () => {
 
   return (
     <div
-      className="min-h-screen"
+      className={styles["min-h-screen"]}
       style={{
         background: "linear-gradient(135deg, #20b2aa 0%, #4ade80 100%)",
       }}
     >
-      <div className="container mx-auto px-4 py-12">
-        <h1 className="text-4xl font-bold text-center mb-10 text-white drop-shadow-lg">
+      <div className={styles.container}>
+        <h1
+          className={`${styles["text-4xl"]} ${styles["font-bold"]} ${styles["text-center"]} ${styles["mb-10"]} ${styles["text-white"]} drop-shadow-lg`}
+        >
           Math Problem Solver
         </h1>
 
-        <div className="max-w-6xl mx-auto bg-white p-8 rounded-2xl shadow-2xl transform hover:scale-[1.01] transition-all duration-300">
-          <div className="flex flex-col md:flex-row gap-8">
+        <div
+          className={`${styles["max-w-6xl"]} mx-auto ${styles["bg-white"]} ${styles["p-8"]} ${styles["rounded-2xl"]} ${styles["shadow-xl"]} transform hover:scale-[1.01] ${styles["transition-all"]} ${styles["duration-300"]}`}
+        >
+          <div
+            className={`${styles.flex} ${styles["flex-col"]} md:flex-row ${styles["gap-8"]}`}
+          >
             {/* Left Column - Image Upload and Preview */}
-            <div className="w-full md:w-2/5 space-y-6">
+            <div
+              className={`${styles["w-full"]} md:w-2/5 ${styles["space-y-6"]}`}
+            >
               <h2
-                className="text-2xl font-bold mb-4"
+                className={`${styles["text-2xl"]} ${styles["font-bold"]} ${styles["mb-4"]}`}
                 style={{ color: "#20b2aa" }}
               >
                 Upload Problem
               </h2>
               <div
-                className="border-3 border-dashed rounded-xl p-6 flex flex-col items-center justify-center h-72 hover:shadow-inner transition-all duration-300 cursor-pointer overflow-hidden"
+                className={`${styles.border} ${styles["border-dashed"]} ${
+                  styles["rounded-xl"]
+                } ${styles["p-6"]} ${styles.flex} ${styles["flex-col"]} ${
+                  styles["items-center"]
+                } ${styles["justify-center"]} ${
+                  styles["h-72"]
+                } hover:shadow-inner ${styles["transition-all"]} ${
+                  styles["duration-300"]
+                } ${styles["cursor-pointer"]} ${styles["overflow-hidden"]} ${
+                  imagePreview ? styles["has-image"] : ""
+                }`}
                 onClick={handleCaptureClick}
                 style={{
                   borderColor: "rgba(32, 178, 170, 0.3)",
@@ -92,17 +110,17 @@ const MathSolverPage: React.FC = () => {
                   <img
                     src={imagePreview}
                     alt="Preview of math problem"
-                    className="max-h-full max-w-full object-contain rounded"
+                    className={`${styles["max-h-full"]} ${styles["max-w-full"]} ${styles["object-contain"]} ${styles.rounded}`}
                   />
                 ) : (
                   <>
                     <div
-                      className="p-6 rounded-full mb-4"
+                      className={`${styles["p-6"]} ${styles["rounded-full"]} ${styles["mb-4"]}`}
                       style={{ background: "rgba(32, 178, 170, 0.1)" }}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-16 w-16"
+                        className={`${styles["h-16"]} ${styles["w-16"]}`}
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -117,12 +135,14 @@ const MathSolverPage: React.FC = () => {
                       </svg>
                     </div>
                     <p
-                      className="text-lg font-medium mb-2"
+                      className={`${styles["text-lg"]} ${styles["font-medium"]} ${styles["mb-2"]}`}
                       style={{ color: "#20b2aa" }}
                     >
                       Upload Math Problem
                     </p>
-                    <p className="text-sm text-gray-500">
+                    <p
+                      className={`${styles["text-sm"]} ${styles["text-light"]}`}
+                    >
                       Click to capture or select an image
                     </p>
                   </>
@@ -137,15 +157,15 @@ const MathSolverPage: React.FC = () => {
                 type="file"
                 accept="image/*"
                 onChange={handleImageChange}
-                className="hidden"
+                className={styles.hidden}
                 title="Upload an image file"
               />
 
-              <div className="flex space-x-3">
+              <div className={`${styles.flex} ${styles["space-x-3"]}`}>
                 <button
                   type="button"
                   onClick={handleCaptureClick}
-                  className="flex-1 px-6 py-3 rounded-lg font-bold text-white shadow-md hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300"
+                  className={`${styles["flex-1"]} ${styles["px-6"]} ${styles["py-3"]} ${styles["rounded-lg"]} ${styles["font-bold"]} ${styles["text-white"]} ${styles["shadow-md"]} hover:shadow-lg transform hover:-translate-y-1 ${styles["transition-all"]} ${styles["duration-300"]}`}
                   style={{
                     background:
                       "linear-gradient(135deg, #20b2aa 0%, #4ade80 100%)",
@@ -161,7 +181,7 @@ const MathSolverPage: React.FC = () => {
                       setSelectedImage(null);
                       setImagePreview(null);
                     }}
-                    className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-all duration-300"
+                    className={`${styles["px-6"]} ${styles["py-3"]} ${styles["bg-gray-200"]} ${styles["text-dark"]} ${styles["rounded-lg"]} ${styles["font-medium"]} hover:bg-gray-300 ${styles["transition-all"]} ${styles["duration-300"]}`}
                   >
                     Clear
                   </button>
@@ -170,20 +190,51 @@ const MathSolverPage: React.FC = () => {
             </div>
 
             {/* Right Column - Form and Results */}
-            <div className="w-full md:w-3/5 space-y-6">
+            <div
+              className={`${styles["w-full"]} md:w-3/5 ${styles["space-y-6"]}`}
+            >
               <h2
-                className="text-2xl font-bold mb-4"
+                className={`${styles["text-2xl"]} ${styles["font-bold"]} ${styles["mb-4"]}`}
                 style={{ color: "#20b2aa" }}
               >
                 Get Solution
               </h2>
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className={styles["space-y-4"]}>
+                {/* Optional: Add a prompt input field */}
+                <div className={styles["mb-4"]}>
+                  <label
+                    htmlFor="prompt"
+                    className={`${styles.block} ${styles["text-sm"]} ${styles["font-medium"]} ${styles["mb-2"]}`}
+                    style={{ color: "#20b2aa" }}
+                  >
+                    Additional Instructions (Optional)
+                  </label>
+                  <textarea
+                    id="prompt"
+                    name="prompt"
+                    value={prompt}
+                    onChange={(e) => setPrompt(e.target.value)}
+                    placeholder="E.g., 'Find the derivative of this function' or 'Solve this equation'"
+                    className={`${styles["w-full"]} ${styles["p-3"]} ${styles.border} ${styles["border-gray-300"]} ${styles["rounded-lg"]} focus:ring-2 focus:ring-teal-500 focus:border-transparent`}
+                    rows={3}
+                  />
+                </div>
+
+                {/* Submit Button */}
                 <button
                   type="submit"
                   disabled={isLoading || !selectedImage}
-                  className={`w-full px-6 py-4 rounded-lg font-bold text-white shadow-md transition-all duration-300 ${
+                  className={`${styles["w-full"]} ${styles["px-6"]} ${
+                    styles["py-4"]
+                  } ${styles["rounded-lg"]} ${styles["font-bold"]} ${
+                    styles["text-white"]
+                  } ${styles["shadow-md"]} ${styles["transition-all"]} ${
+                    styles["duration-300"]
+                  } ${
                     isLoading || !selectedImage
-                      ? "bg-gray-300 cursor-not-allowed"
+                      ? styles["bg-gray-300"] +
+                        " " +
+                        styles["cursor-not-allowed"]
                       : "hover:shadow-lg transform hover:-translate-y-1"
                   }`}
                   style={
@@ -196,9 +247,11 @@ const MathSolverPage: React.FC = () => {
                   }
                 >
                   {isLoading ? (
-                    <span className="flex items-center justify-center">
+                    <span
+                      className={`${styles.flex} ${styles["items-center"]} ${styles["justify-center"]}`}
+                    >
                       <svg
-                        className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                        className={`${styles["animate-spin"]} ${styles["-ml-1"]} ${styles["mr-3"]} ${styles["h-5"]} ${styles["w-5"]} ${styles["text-white"]}`}
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
@@ -227,28 +280,36 @@ const MathSolverPage: React.FC = () => {
 
               {/* Error Message */}
               {error && (
-                <div className="p-4 bg-red-50 border-l-4 border-red-500 rounded-lg shadow-sm">
-                  <p className="text-red-700 font-medium">{error}</p>
+                <div
+                  className={`${styles["p-4"]} ${styles["bg-error-light"]} ${styles["border-l-4"]} ${styles["border-error"]} ${styles["rounded-lg"]} ${styles["shadow-sm"]}`}
+                >
+                  <p
+                    className={`${styles["text-error"]} ${styles["font-medium"]}`}
+                  >
+                    {error}
+                  </p>
                 </div>
               )}
 
               {/* Analysis Result */}
               {analysis && (
-                <div className="p-6 border rounded-xl bg-white shadow-lg max-h-[500px] overflow-y-auto">
+                <div
+                  className={`${styles["p-6"]} ${styles.border} ${styles["rounded-xl"]} ${styles["bg-white"]} ${styles["shadow-lg"]} ${styles["max-h-60"]} ${styles["overflow-y-auto"]}`}
+                >
                   <h2
-                    className="text-2xl font-bold mb-4"
+                    className={`${styles["text-2xl"]} ${styles["font-bold"]} ${styles["mb-4"]}`}
                     style={{ color: "#20b2aa" }}
                   >
                     Solution
                   </h2>
-                  <div className="prose max-w-none">
+                  <div className={styles["max-w-none"]}>
                     {analysis.split("\n").map((line, index) => (
                       <p
                         key={index}
                         className={
                           line.toLowerCase().includes("final answer")
-                            ? "font-bold p-4 my-3 bg-green-50 border-l-4 border-green-500 rounded-lg shadow-sm"
-                            : "my-2"
+                            ? `${styles["font-bold"]} ${styles["p-4"]} ${styles["my-3"]} ${styles["bg-success-light"]} ${styles["border-l-4"]} ${styles["border-success"]} ${styles["rounded-lg"]} ${styles["shadow-sm"]}`
+                            : styles["my-2"]
                         }
                       >
                         {line}

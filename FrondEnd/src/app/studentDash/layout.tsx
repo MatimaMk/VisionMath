@@ -60,9 +60,9 @@ export default function StudentDashboardLayout({
               ),
             },
             {
-              key: "/studentDash/ImageAnalyzer",
+              key: "/studentDash/imageAnalyzer",
               icon: <UploadOutlined />,
-              label: <Link href="/studentDash/qnaGenerator">VisionMath</Link>,
+              label: <Link href="/studentDash/imageAnalyzer">VisionMath</Link>,
             },
             {
               key: "/studentDash/progress",

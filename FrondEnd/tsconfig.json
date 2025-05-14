@@ -27,7 +27,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/app/landing-page/style/landingPage.modul"
+    "src/app/landing-page/style/landingPage.modul",
+    "src/components/testResults"
   ],
   "exclude": ["node_modules"]
 }

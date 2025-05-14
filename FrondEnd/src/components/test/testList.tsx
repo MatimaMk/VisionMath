@@ -12,13 +12,18 @@ import {
   Empty,
   Tag,
   Space,
+  Badge,
+  Statistic,
+  Divider,
 } from "antd";
 import {
   EyeOutlined,
   ClockCircleOutlined,
   BookOutlined,
-  PercentageOutlined,
   ReloadOutlined,
+  TrophyOutlined,
+  CheckCircleOutlined,
+  FileTextOutlined,
 } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import { useTestState, useTestAction } from "@/provider/test-provider";
@@ -205,11 +210,22 @@ const StudentTestList = () => {
   };
 
   const getDifficultyTag = (level: number) => {
-    const colors = ["green", "blue", "orange"];
+    // Colors based on difficulty
+    const tagClasses = ["tag-easy", "tag-medium", "tag-hard"];
     const texts = ["Easy", "Medium", "Hard"];
+    const icons = [
+      <CheckCircleOutlined key="easy" />,
+      <TrophyOutlined key="medium" />,
+      <TrophyOutlined key="hard" />,
+    ];
 
     return (
-      <Tag color={colors[level] || "blue"}>{texts[level] || "Unknown"}</Tag>
+      <Tag className={`${styles[tagClasses[level] || "tag-easy"]}`}>
+        <Space>
+          {icons[level]}
+          {texts[level] || "Unknown"}
+        </Space>
+      </Tag>
     );
   };
 
@@ -255,70 +271,113 @@ const StudentTestList = () => {
   // Tests are available, show them in card format
   return (
     <div className={styles.testListContainer}>
-      <div className={styles.testListHeader}>
-        <Title level={4}>Available Tests</Title>
-        <Search
-          placeholder="Search tests..."
-          allowClear
-          onSearch={handleSearchChange}
-          onChange={(e) => handleSearchChange(e.target.value)}
-          style={{ width: 250 }}
-        />
-      </div>
+      <Card className={styles.dashboardHeader}>
+        <Row gutter={[24, 16]} align="middle">
+          <Col xs={24} md={12}>
+            <Title level={3} className={styles.pageTitle}>
+              Available Tests
+            </Title>
+            <Paragraph className={styles.pageSubtitle}>
+              Take a test to assess your knowledge and skills
+            </Paragraph>
+          </Col>
+          <Col xs={24} md={12}>
+            <Row gutter={16} justify="end">
+              <Col>
+                <Card className={styles.statsCard}>
+                  <Statistic
+                    title="Total Tests"
+                    value={filteredTests.length}
+                    prefix={<FileTextOutlined />}
+                    className={styles.testCounter}
+                  />
+                </Card>
+              </Col>
+              <Col>
+                <Search
+                  placeholder="Search tests..."
+                  allowClear
+                  onSearch={handleSearchChange}
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                  className={styles.searchBox}
+                />
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      </Card>
 
-      <Row gutter={[16, 16]} className={styles.testsGrid}>
+      <Divider className={styles.sectionDivider} />
+
+      <Row gutter={[24, 24]} className={styles.testsGrid}>
         {filteredTests.map((test) => (
           <Col xs={24} sm={12} md={8} lg={6} key={test.id}>
-            <Card
-              hoverable
-              className={styles.testCard}
-              onClick={() => handleViewTestSafe(test.id)}
-              actions={[
-                <Button
-                  key="take"
-                  type="primary"
-                  icon={<EyeOutlined />}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleViewTestSafe(test.id);
-                  }}
-                >
-                  Take Test
-                </Button>,
-              ]}
+            <Badge.Ribbon
+              text={`${test.passingPercentage}% to Pass`}
+              color="rgba(255, 255, 255, 0.3)"
+              className={styles.testRibbon}
             >
-              <Meta
-                title={<Text strong>{test.title}</Text>}
-                description={
-                  <Space
-                    direction="vertical"
-                    size="small"
-                    style={{ width: "100%" }}
-                  >
-                    <Paragraph ellipsis={{ rows: 2 }}>
-                      {test.description}
-                    </Paragraph>
-                    <div className={styles.testInfo}>
-                      <Space>
-                        <ClockCircleOutlined /> {test.timeLimitMinutes} mins
-                      </Space>
-                      <Space>
-                        <PercentageOutlined /> {test.passingPercentage}% to pass
-                      </Space>
-                    </div>
-                    <div className={styles.testTags}>
-                      {getDifficultyTag(test.difficultyLevel)}
-                      {test.questions && (
-                        <Tag color="blue">
-                          <BookOutlined /> {test.questions.length || 0}{" "}
-                          Questions
-                        </Tag>
-                      )}
-                    </div>
-                  </Space>
+              <Card
+                hoverable
+                className={styles.testCard}
+                cover={
+                  <div className={styles.testCardCover}>
+                    <BookOutlined className={styles.testCardIcon} />
+                  </div>
                 }
-              />
-            </Card>
+                onClick={() => handleViewTestSafe(test.id)}
+                actions={[
+                  <Button
+                    key="take"
+                    type="primary"
+                    icon={<EyeOutlined />}
+                    className={styles.takeTestButton}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleViewTestSafe(test.id);
+                    }}
+                  >
+                    Take Test
+                  </Button>,
+                ]}
+              >
+                <Meta
+                  title={
+                    <Text strong className={styles.testTitle}>
+                      {test.title}
+                    </Text>
+                  }
+                  description={
+                    <Space
+                      direction="vertical"
+                      size="small"
+                      style={{ width: "100%" }}
+                    >
+                      <Paragraph
+                        ellipsis={{ rows: 2 }}
+                        className={styles.testDescription}
+                      >
+                        {test.description}
+                      </Paragraph>
+                      <div className={styles.testTags}>
+                        {getDifficultyTag(test.difficultyLevel)}
+                        {test.timeLimitMinutes && (
+                          <Tag
+                            color="var(--primary-color-light)"
+                            style={{ color: "var(--primary-color)" }}
+                          >
+                            <Space>
+                              <ClockCircleOutlined />
+                              {test.timeLimitMinutes} mins
+                            </Space>
+                          </Tag>
+                        )}
+                      </div>
+                    </Space>
+                  }
+                />
+              </Card>
+            </Badge.Ribbon>
           </Col>
         ))}
       </Row>
