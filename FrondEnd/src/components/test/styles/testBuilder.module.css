@@ -1,0 +1,86 @@
+.testFormContainer {
+  width: 100%;
+}
+
+.formCard {
+  margin-top: 24px;
+}
+
+.steps {
+  margin-bottom: 20px;
+}
+
+.stepsContent {
+  min-height: 200px;
+}
+
+.formRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.halfWidth {
+  flex: 1;
+  min-width: 200px;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stepNavigation {
+  margin-top: 24px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.reviewSection {
+  background-color: #fafafa;
+  padding: 16px;
+  border-radius: 4px;
+}
+
+.reviewItem {
+  margin-bottom: 8px;
+  display: flex;
+  gap: 8px;
+}
+
+.questionReviewItem {
+  margin-bottom: 16px;
+  background-color: white;
+  padding: 12px;
+  border-radius: 4px;
+  border: 1px solid #f0f0f0;
+}
+
+.questionDetails {
+  margin-top: 8px;
+  display: flex;
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .formRow {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .halfWidth {
+    width: 100%;
+  }
+
+  .cardHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .questionDetails {
+    flex-direction: column;
+    gap: 4px;
+  }
+}

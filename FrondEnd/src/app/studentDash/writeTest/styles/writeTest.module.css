@@ -1,0 +1,56 @@
+.container {
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.titleSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.spinner {
+  display: flex;
+  justify-content: center;
+  margin: 100px 0;
+}
+
+.errorActions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.instructionsCard {
+  margin-bottom: 24px;
+}
+
+.testInfo {
+  margin-top: 16px;
+  display: flex;
+  gap: 24px;
+}
+
+.previewContent {
+  margin-top: 24px;
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .testInfo {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
