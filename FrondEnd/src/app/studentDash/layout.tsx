@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState } from "react";
 import {
   MenuFoldOutlined,
@@ -8,11 +9,19 @@ import {
   VideoCameraOutlined,
 } from "@ant-design/icons";
 import { Button, Layout, Menu, theme } from "antd";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const { Header, Sider, Content } = Layout;
 
-const App: React.FC = () => {
+export default function StudentDashboardLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   const [collapsed, setCollapsed] = useState(false);
+  const router = useRouter();
+
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -27,31 +36,41 @@ const App: React.FC = () => {
           defaultSelectedKeys={["1"]}
           items={[
             {
-              key: "1",
-              icon: <UserOutlined />,
-              label: "Content",
-            },
-            {
-              key: "2",
+              key: "/studentDash",
               icon: <VideoCameraOutlined />,
-              label: "Tests",
+              label: "Student",
             },
             {
-              key: "3",
+              key: "/studentDas",
+              icon: <UserOutlined />,
+              label: <Link href="/studentDash/imageAnalyzer">Content</Link>,
+            },
+
+            {
+              key: "/studentDash/viewTest",
               icon: <UploadOutlined />,
-              label: "MathSolver",
+              label: <Link href="/studentDash/ViewTest">Tests</Link>,
+            },
+
+            {
+              key: "/studentDash/QnAGenerator",
+              icon: <UploadOutlined />,
+              label: (
+                <Link href="/studentDash/qnaGenerator">AI QuestionsG</Link>
+              ),
             },
             {
-              key: "4",
+              key: "/studentDash/ImageAnalyzer",
               icon: <UploadOutlined />,
-              label: "QnA Gnerator",
+              label: <Link href="/studentDash/qnaGenerator">VisionMath</Link>,
             },
             {
-              key: "5",
+              key: "/studentDash/progress",
               icon: <UploadOutlined />,
-              label: "Progress",
+              label: <Link href="/studentDash/progress">Progress</Link>,
             },
           ]}
+          onClick={({ key }) => router.push(key)}
         />
       </Sider>
       <Layout>
@@ -76,11 +95,9 @@ const App: React.FC = () => {
             borderRadius: borderRadiusLG,
           }}
         >
-          Content
+          {children}
         </Content>
       </Layout>
     </Layout>
   );
-};
-
-export default App;
+}

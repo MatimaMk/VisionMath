@@ -149,7 +149,7 @@ const StudentTestList = () => {
   // Handle clicking on a test to view/take it
   const handleViewTest = (testId: string) => {
     console.log("Navigating to test with ID:", testId);
-    router.push(`/educator-dashboard/writeTest/id=${testId}`);
+    router.push(`/studentDash/writeTest/id=${testId}`);
   };
 
   // Safe version that checks for null/undefined before navigation

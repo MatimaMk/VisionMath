@@ -1,0 +1,119 @@
+.testResultsContainer {
+  width: 100%;
+}
+
+.summaryCard {
+  margin-bottom: 24px;
+}
+
+.resultHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.resultStatus {
+  display: flex;
+  gap: 8px;
+}
+
+.scoreCard {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.passingScoreInfo {
+  margin-top: 8px;
+  text-align: center;
+}
+
+.difficultyInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+  justify-content: center;
+}
+
+.actionsRow {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.questionDetailsCard {
+  margin-bottom: 24px;
+}
+
+.questionsCollapse {
+  background-color: white;
+}
+
+.questionHeader {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.questionStatus {
+  font-size: 16px;
+}
+
+.correct {
+  color: #52c41a;
+}
+
+.incorrect {
+  color: #f5222d;
+}
+
+.unanswered {
+  color: #faad14;
+}
+
+.questionPanel {
+  margin-bottom: 16px;
+  border-radius: 4px;
+}
+
+.questionInfo {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.answerDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.answerDetail {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.answerText {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (max-width: 768px) {
+  .resultHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .actionsRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

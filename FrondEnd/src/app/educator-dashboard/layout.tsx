@@ -9,6 +9,7 @@ import {
 } from "@ant-design/icons";
 import { Button, Layout, Menu, theme } from "antd";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const { Header, Sider, Content } = Layout;
 
@@ -18,6 +19,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }>) {
   const [collapsed, setCollapsed] = useState(false);
+  const router = useRouter();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -58,24 +60,8 @@ export default function DashboardLayout({
                 <Link href="/educator-dashboard/createTest">Create Test</Link>
               ),
             },
-
-            {
-              key: "/student-dashboard/writeTest",
-              icon: <UploadOutlined />,
-              label: (
-                <Link href="/educator-dashboard/writeTest">write Test</Link>
-              ),
-            },
-            {
-              key: "/student-dashboard/viewTest",
-              icon: <UploadOutlined />,
-              label: (
-                <Link href="/educator-dashboard/viewTest">
-                  Student View Test
-                </Link>
-              ),
-            },
           ]}
+          onClick={({ key }) => router.push(key)}
         />
       </Sider>
       <Layout>
