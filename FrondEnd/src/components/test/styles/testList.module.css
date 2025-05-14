@@ -1,42 +1,142 @@
+/* Enhanced styling for the StudentTestList component */
+
 .testListContainer {
-  width: 100%;
+  background-color: #f5f7fa;
+  padding: 24px;
+  min-height: calc(100vh - 64px);
 }
 
-.testListHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.dashboardHeader {
   margin-bottom: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  background: linear-gradient(135deg, #ffffff 0%, #f0f5ff 100%);
+  border: none;
+}
+
+.pageTitle {
+  margin-bottom: 0 !important;
+  color: #2a3a4d;
+}
+
+.pageSubtitle {
+  color: #637381;
+  margin-bottom: 0;
+}
+
+.statsCard {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.testCounter {
+  color: #3366ff;
+}
+
+.testCounter :global(.ant-statistic-content) {
+  font-weight: 600;
+}
+
+.searchBox {
+  width: 250px;
+  border-radius: 6px;
+}
+
+.searchBox :global(.ant-input) {
+  border-radius: 6px;
 }
 
 .testsGrid {
-  margin-top: 16px;
+  margin-top: 20px;
 }
 
 .testCard {
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  transition: all 0.3s;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .testCard:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.testCardCover {
+  height: 100px;
+  background: linear-gradient(135deg, #20b2aa 0%, #4ade80 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.testCardIcon {
+  font-size: 40px;
+  color: white;
+}
+
+.testTitle {
+  font-size: 16px;
+  margin-bottom: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #2a3a4d;
+}
+
+.testDescription {
+  color: #637381;
+  font-size: 14px;
+  margin-bottom: 12px;
 }
 
 .testInfo {
   display: flex;
   justify-content: space-between;
-  margin-top: 8px;
-  color: rgba(0, 0, 0, 0.45);
+  align-items: center;
+  margin-bottom: 8px;
 }
 
 .testTags {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   margin-top: 8px;
-  flex-wrap: wrap;
+}
+
+.testTags :global(.ant-tag) {
+  margin-right: 0;
+  padding: 2px 8px;
+  font-size: 12px;
+  border-radius: 4px;
+}
+
+.takeTestButton {
+  border-radius: 6px;
+  width: 90%;
+  margin: 0 auto;
+  background: #3366ff;
+  border-color: #3366ff;
+  transition: all 0.3s ease;
+}
+
+.takeTestButton:hover {
+  background: #1939b7;
+  border-color: #1939b7;
+  transform: scale(1.03);
+}
+
+.testRibbon {
+  font-size: 12px;
+}
+
+.sectionDivider {
+  margin: 8px 0 24px;
 }
 
 .loadingContainer {
@@ -47,19 +147,30 @@
 }
 
 .errorCard {
-  padding: 24px;
+  margin: 0 auto;
+  max-width: 600px;
+  text-align: center;
+  padding: 48px 24px;
+  border-radius: 12px;
 }
 
 .errorActions {
-  display: flex;
-  justify-content: center;
   margin-top: 24px;
 }
 
+/* Media queries for responsive design */
 @media (max-width: 768px) {
-  .testListHeader {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
+  .testListContainer {
+    padding: 16px;
+  }
+
+  .searchBox {
+    width: 100%;
+    margin-top: 16px;
+  }
+
+  .statsCard {
+    width: 100%;
+    margin-bottom: 16px;
   }
 }

@@ -1,152 +1,204 @@
-.testTakerContainer {
-  width: 100%;
+/* writeTest.module.css */
+
+.testContainer {
+  max-width: 1200px;
+  margin: 24px auto;
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+}
+
+.errorCard {
+  max-width: 600px;
+  margin: 48px auto;
+  text-align: center;
+}
+
+.testInfoCard {
+  max-width: 800px;
+  margin: 48px auto;
+  padding: 24px;
+}
+
+.testDetails {
+  margin: 16px 0;
+}
+
+.detailItem {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  border: 1px solid #f0f0f0;
+  border-radius: 4px;
+  background-color: #fafafa;
+}
+
+.instructions {
+  margin: 16px 0 32px;
+}
+
+.startButton {
+  display: block;
+  width: 200px;
+  height: 48px;
+  margin: 32px auto 0;
+  font-size: 16px;
 }
 
 .testHeader {
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
-.testContent {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
-}
-
-.questionSection {
-  flex: 1;
-  min-width: 500px;
-}
-
-.progressSection {
+.progressBar {
   width: 300px;
+  margin: 0 16px;
+}
+
+.timer {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+}
+
+.timerIcon {
+  margin-right: 8px;
+  color: #f5222d;
 }
 
 .questionCard {
-  width: 100%;
-}
-
-.questionHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.questionContent {
-  min-height: 300px;
+  margin-bottom: 16px;
+  padding: 24px;
 }
 
 .questionText {
-  font-size: 16px;
   margin-bottom: 24px;
 }
 
+.questionType {
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
 .answerSection {
-  margin: 16px 0;
+  margin-top: 24px;
 }
 
 .optionsGroup {
   width: 100%;
 }
 
-.optionRadio {
-  padding: 8px;
-  margin: 8px 0;
+.optionItem {
+  display: block;
   width: 100%;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  border: 1px solid #d9d9d9;
   border-radius: 4px;
   transition: all 0.3s;
 }
 
-.optionRadio:hover {
-  background-color: #f5f5f5;
+.optionItem:hover {
+  border-color: #1890ff;
+  background-color: #f0f5ff;
 }
 
-.textAnswer {
+.textInput,
+.numberInput {
   width: 100%;
+  padding: 12px;
+  font-size: 16px;
 }
 
-.numericAnswer {
-  width: 100%;
+.navigationButtons {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.submitButton {
+  background-color: #52c41a;
+  border-color: #52c41a;
+}
+
+.submitButton:hover {
+  background-color: #389e0d;
+  border-color: #389e0d;
 }
 
 .questionNavigation {
-  display: flex;
-  justify-content: space-between;
+  margin-bottom: 24px;
 }
 
-.progressCard {
-  width: 100%;
-}
-
-.timerSection {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
-
-.questionNavSection {
-  margin-top: 16px;
-}
-
-.questionBadges {
+.questionButtons {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 8px;
 }
 
-.questionBadge {
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.questionBadge:hover {
-  transform: scale(1.1);
-}
-
-.currentBadge {
+.questionButton {
   position: relative;
+  width: 40px;
+  height: 40px;
+  margin: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.currentBadge::after {
-  content: "";
+.answered {
+  border-color: #52c41a;
+  color: #52c41a;
+}
+
+.answeredIcon {
   position: absolute;
-  width: 100%;
-  height: 100%;
-  border: 2px solid #1890ff;
+  top: -5px;
+  right: -5px;
+  font-size: 12px;
+  color: #52c41a;
+  background-color: white;
   border-radius: 50%;
-  top: 0;
-  left: 0;
-  animation: pulse 1.5s infinite;
 }
 
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.2);
-    opacity: 0.5;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
+/* Responsive styles */
 @media (max-width: 768px) {
-  .testContent {
+  .testContainer {
+    padding: 0 16px;
+  }
+
+  .progressBar {
+    width: 150px;
+  }
+
+  .detailItem {
+    margin-bottom: 16px;
+  }
+}
+
+@media (max-width: 576px) {
+  .questionButton {
+    width: 32px;
+    height: 32px;
+    margin: 2px;
+  }
+
+  .progressBar {
+    width: 100px;
+  }
+
+  .navigationButtons {
     flex-direction: column;
+    gap: 12px;
   }
 
-  .questionSection {
-    min-width: 100%;
-    order: 2;
-  }
-
-  .progressSection {
+  .navigationButtons button {
     width: 100%;
-    order: 1;
   }
 }

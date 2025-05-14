@@ -71,7 +71,7 @@ export default function TakeTestPage() {
       console.log("Calling getTestWithQuestions with clean ID:", testId);
       getTestWithQuestions(testId);
     }
-  }, [testId, testWithQuestions, getTestWithQuestions]);
+  }, [testId, getTestWithQuestions]);
 
   const handleStartTest = () => {
     setShowStartConfirm(true);
