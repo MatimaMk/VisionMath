@@ -16,6 +16,7 @@ import { useAuthActions } from "@/provider/auth-provider";
 import { useUserActions } from "@/provider/users-provider";
 import { ISignInRequest } from "@/provider/auth-provider/context";
 import { useRouter } from "next/navigation";
+import { getRole } from "@/utils/decoder";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -66,7 +67,16 @@ export default function LoginForm({
         await getCurrentUser(token);
         showSuccessToast();
         onLoginSuccess?.();
-        router.push("/educator-dashboard");
+
+        const role = getRole(token);
+
+        if (role === "educator") {
+          router.push("/educator-dashboard");
+        } else if (role === "student") {
+          router.push("/studentDash");
+        } else {
+          router.push("/");
+        }
       } else {
         showErrorToast("Invalid login response");
       }
@@ -176,7 +186,6 @@ export default function LoginForm({
                 style={{
                   fontSize: "24px",
                   marginBottom: "8px",
-
                   color: "linear-gradient(135deg, #20B2AA 0%, #4ade80 100%)",
                 }}
               >
@@ -232,10 +241,6 @@ export default function LoginForm({
                 name="password"
                 rules={[
                   { required: true, message: "Please input your password!" },
-                  {
-                    min: 8,
-                    message: "Password must be at least 8 characters!",
-                  },
                 ]}
               >
                 <Input.Password
@@ -276,11 +281,8 @@ export default function LoginForm({
               >
                 Don&apos;t have an account?{" "}
                 <a
-                  href="#"
-                  style={{
-                    color: "linear-gradient(135deg, #20B2AA 0%, #4ade80 100%)",
-                    fontWeight: 500,
-                  }}
+                  href="/register"
+                  style={{ color: "#4ade80", fontWeight: "bold" }}
                 >
                   Sign up
                 </a>

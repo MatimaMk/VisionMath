@@ -27,7 +27,7 @@ const withAuth = (WrappedLayout: React.ComponentType<LayoutProps>) => {
         if (role === "educator") {
           router.push("/educator-dashboard");
         } else if (role === "patient") {
-          router.push("/student-dashboard");
+          router.push("/studentDash");
         } else {
           router.push("/");
         }
