@@ -1,5 +1,4 @@
 "use client";
-
 import { useContext, useReducer } from "react";
 import { TestReducer } from "./reducer";
 import {
@@ -59,9 +58,8 @@ export const TestProvider = ({ children }: { children: React.ReactNode }) => {
           SkipCount: 0,
         },
       });
-      console.log("Response data:", response);
+
       dispatch(getAllTestsSuccess(response.data.result.items));
-      console.log("after the response", response.data.result.items);
     } catch (error) {
       console.error("Error fetching tests:", error);
       dispatch(getAllTestsError());
@@ -71,17 +69,15 @@ export const TestProvider = ({ children }: { children: React.ReactNode }) => {
   const getTestWithQuestions = async (id: string) => {
     dispatch(getTestWithQuestionsPending());
     try {
-      console.log("getTestWithQuestions received ID:", id);
-
       // Use axios params object to ensure proper URL encoding
       const response = await instance.get("/Test/GetTestWithQuestions", {
         params: {
-          id: id, // Using lowercase 'id' as parameter name
+          id: id,
         },
       });
 
       const testWithQuestions: TestWithQuestionsDto = response.data.result;
-      console.log("Test with questions response:", response.data);
+
       dispatch(getTestWithQuestionsSuccess(testWithQuestions));
     } catch (error) {
       console.error("Error fetching test with questions:", error);

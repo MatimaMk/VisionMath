@@ -163,7 +163,7 @@ export default function LoginForm({
                   style={{ width: "100%", maxWidth: "300px", margin: "0 auto" }}
                 >
                   <img
-                    src="/api/placeholder/300/300"
+                    src="https://framerusercontent.com/images/OkqH0Xja9Kp5AZHSzl6ifosx70c.png"
                     alt="Mathematics Learning Illustration"
                     style={{ width: "100%", objectFit: "contain" }}
                   />

@@ -12,14 +12,14 @@ export default function StudentTestsPage() {
 
   // Fetch all tests when the page loads
   useEffect(() => {
-    console.log("Student Tests Page: Fetching all tests");
+\
     getAllTests();
   }, [getAllTests]);
 
   // Log when tests are loaded
   useEffect(() => {
     if (tests) {
-      console.log("Tests loaded in page:", tests.length);
+   
     }
   }, [tests]);
 
