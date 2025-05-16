@@ -2,7 +2,6 @@
 
 MathVision is an interactive mathematics education platform designed to help students master mathematical concepts through personalized learning paths and adaptive testing. The platform features an integrated Gemini AI assistant that provides tailored support, analyzes performance data, and offers targeted recommendations based on individual learning patterns.
 
-![MathVision Platform](https://via.placeholder.com/800x400?text=MathVision+Learning+Platform)
 
 ## Features
 
@@ -28,20 +27,9 @@ MathVision is an interactive mathematics education platform designed to help stu
   # Install Node.js on macOS with Homebrew
   brew install node
   
-  # For Windows, download from https://nodejs.org/
-  ```
-
-- **npm/yarn**: npm 8.x+ or yarn 1.22.x+
-  ```bash
-  # Check npm version
-  npm -v
-  
   # Update npm
   npm install -g npm@latest
-  
-  # Install yarn (optional)
-  npm install -g yarn
-  ```
+
 
 - **Git**: Latest version recommended
   ```bash
@@ -62,7 +50,7 @@ MathVision is an interactive mathematics education platform designed to help stu
 
 ```bash
 git clone https://github.com/yourusername/mathvision.git
-cd mathvision
+
 ```
 
 ### Step 2: Install Dependencies
@@ -95,18 +83,6 @@ This will install all required dependencies including:
 ### Step 4: Set Up Google Gemini API
 
 1. Go to [Google AI Studio](https://ai.google.dev/)
-2. Create an account or sign in
-3. Generate an API key for Gemini
-
-### Step 5: Configure Environment Variables
-
-Create a `.env.local` file in the root directory with the following variables:
-
-```
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-NEXT_PUBLIC_GEMINI_API_KEY=your_gemini_api_key
-```
 
 For production deployment, add these environment variables to your hosting platform.
 
@@ -120,8 +96,7 @@ npm run dev
 yarn dev
 ```
 
-Access the application at [http://localhost:3000](http://localhost:3000)
-
+Access the application at https://visionmath.vercel.app/
 ### Step 7: Build for Production
 
 ```bash
@@ -191,10 +166,11 @@ The dashboard displays:
 - **Backend**: Supabase (PostgreSQL, Authentication, Functions), C#, Abp, .Net 9
 - **AI Integration**: Google Gemini API
 - **Deployment**: Vercel and rendor for backend
-
-
+- 
+## Edge Functions for AI
+- https://supabase.com/dashboard/project/edaiyqrxctozonsclcqt/functions
+       
 ## Contributing
-
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Commit your changes (`git commit -m 'Add some amazing feature'`)
