@@ -11,9 +11,6 @@ type PageProps = {
 };
 
 export default async function TestResultsPage({ params }: PageProps) {
-  console.log("params", params.resultId);
-  console.log("params", params);
-
   let result;
   try {
     result = await mathTestService.getTestResult(params?.resultId);
