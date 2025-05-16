@@ -44,7 +44,6 @@ export const TopicProvider = ({ children }: { children: React.ReactNode }) => {
     await instance
       .get(endpoint)
       .then((response) => {
-        console.log("response:", response);
         dispatch(getTopicsSuccess(response.data.result.items));
         return response.data;
       })
