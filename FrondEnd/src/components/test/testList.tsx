@@ -59,7 +59,6 @@ const StudentTestList = () => {
       try {
         setLoading(true);
         setError(false);
-        console.log("Fetching tests directly from API");
 
         // Replace with your actual API endpoint
         const response = await axios.get(
@@ -72,9 +71,6 @@ const StudentTestList = () => {
           }
         );
 
-        console.log("Direct API response:", response.data.result?.items);
-
-        // Extract tests from the response
         let testsArray: TestDto[] = [];
         const data = response.data as ApiResponse;
 
@@ -89,7 +85,6 @@ const StudentTestList = () => {
           }
         }
 
-        console.log("Directly fetched tests:", testsArray);
         setDirectFetchedTests(testsArray);
         setLoading(false);
       } catch (error) {
@@ -99,14 +94,12 @@ const StudentTestList = () => {
       }
     };
 
-    console.log("Fetching tests through provider");
     getAllTests();
 
     fetchTestsDirectly();
   }, [getAllTests]);
 
   useEffect(() => {
-    console.log("Raw tests data:", tests);
     let testsArray: TestDto[] = [];
 
     if (tests) {
@@ -126,15 +119,12 @@ const StudentTestList = () => {
       }
     }
 
-    console.log("Extracted tests array from provider:", testsArray);
-
     // If provider data exists, use it
     if (testsArray && testsArray.length > 0) {
       filterTests(testsArray);
     }
     // Otherwise, use directly fetched data
     else if (directFetchedTests && directFetchedTests.length > 0) {
-      console.log("Using directly fetched tests data instead of provider");
       filterTests(directFetchedTests);
     }
   }, [tests, searchText, directFetchedTests]);
@@ -147,13 +137,11 @@ const StudentTestList = () => {
         test.description?.toLowerCase().includes(searchText.toLowerCase())
     );
 
-    console.log("Filtered tests:", filtered.length);
     setFilteredTests(filtered);
   };
 
   // Handle clicking on a test to view/take it
   const handleViewTest = (testId: string) => {
-    console.log("Navigating to test with ID:", testId);
     router.push(`/studentDash/writeTest/id=${testId}`);
   };
 

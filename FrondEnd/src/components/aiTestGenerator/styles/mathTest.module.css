@@ -1,0 +1,1101 @@
+/* styles/MathTest.module.css */
+
+/* Common Styles */
+.container {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top: 4px solid #6d28d9;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingContainer,
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 70vh;
+  text-align: center;
+  padding: 2rem;
+}
+
+.errorMessage {
+  color: #e53e3e;
+  margin-bottom: 1.5rem;
+}
+
+.returnButton {
+  padding: 0.75rem 1.5rem;
+  background-color: #6d28d9;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+
+/* Math Tests Home Page */
+.heroSection {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 3rem 1rem;
+  background: linear-gradient(135deg, #20b2aa 0%, #4ade80 100%);
+  border-radius: 1rem;
+  color: white;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  opacity: 0.9;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.sectionTitle {
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+  color: #1f2937;
+  text-align: center;
+}
+
+.generatorSection {
+  margin-bottom: 4rem;
+}
+
+.historySection {
+  margin-bottom: 4rem;
+}
+
+.featureSection {
+  margin-bottom: 3rem;
+}
+
+.featureGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.featureCard {
+  background-color: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.featureCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.featureIcon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.featureCard h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+  color: #1f2937;
+}
+
+.featureCard p {
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 3rem;
+  background-color: white;
+  border-radius: 1rem;
+  color: #6b7280;
+}
+
+.testGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Topic Selector Component */
+.topicForm {
+  background-color: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.formGroup {
+  margin-bottom: 1.5rem;
+}
+
+.formLabel {
+  display: block;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.formSelect {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #d1d5db;
+  font-size: 1rem;
+  color: #1f2937;
+}
+
+.difficultySelectors {
+  display: flex;
+  gap: 1rem;
+}
+
+.difficultyLabel {
+  flex: 1;
+  position: relative;
+}
+
+.difficultyRadio {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.difficultyOption {
+  display: block;
+  text-align: center;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.difficultyRadio:checked + .difficultyOption {
+  border-color: #6d28d9;
+  background-color: rgba(109, 40, 217, 0.1);
+  color: #6d28d9;
+}
+
+.easy {
+  color: #10b981;
+}
+
+.medium {
+  color: #f59e0b;
+}
+
+.hard {
+  color: #ef4444;
+}
+
+.difficultyRadio:checked + .easy {
+  border-color: #10b981;
+  background-color: rgba(16, 185, 129, 0.1);
+}
+
+.difficultyRadio:checked + .medium {
+  border-color: #f59e0b;
+  background-color: rgba(245, 158, 11, 0.1);
+}
+
+.difficultyRadio:checked + .hard {
+  border-color: #ef4444;
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+.rangeSlider {
+  width: 100%;
+  height: 8px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #e5e7eb;
+  border-radius: 4px;
+  outline: none;
+  margin: 1rem 0;
+}
+
+.rangeSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #6d28d9;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.rangeLabels {
+  display: flex;
+  justify-content: space-between;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.questionCount {
+  font-weight: 700;
+  color: #6d28d9;
+  margin-left: 0.5rem;
+}
+
+.generateButton {
+  display: block;
+  width: 100%;
+  padding: 0.875rem;
+  background: linear-gradient(135deg, #20b2aa 0%, #4ade80 100%);
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.generateButton:hover:not(:disabled) {
+  background-color: #5b21b6;
+}
+
+.generateButton:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.errorAlert {
+  background-color: #fee2e2;
+  border-left: 4px solid #ef4444;
+  color: #b91c1c;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+/* Math Test Card Component */
+.testCard {
+  background-color: white;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.testCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.testCardHeader {
+  padding: 1.25rem;
+  border-bottom: 1px solid #f3f4f6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.testCardTitle {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #1f2937;
+}
+
+.testCardBadge {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 1rem;
+  font-weight: 500;
+}
+
+.testCardBody {
+  padding: 1.25rem;
+}
+
+.testCardDetail {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.testCardLabel {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.testCardValue {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.testCardFooter {
+  padding: 1.25rem;
+  border-top: 1px solid #f3f4f6;
+  text-align: center;
+}
+
+.testCardLink {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background-color: #6d28d9;
+  color: white;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.testCardLink:hover {
+  background-color: #5b21b6;
+}
+
+/* Score colors */
+.excellent {
+  color: #10b981;
+}
+
+.good {
+  color: #3b82f6;
+}
+
+.average {
+  color: #f59e0b;
+}
+
+.poor {
+  color: #ef4444;
+}
+
+/* Test Taking Page */
+.testHeader {
+  background-color: white;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.testInfo {
+  flex: 1;
+  min-width: 200px;
+}
+
+.testTitle {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #1f2937;
+}
+
+.testMeta {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.testTopic {
+  color: #6b7280;
+}
+
+.testDifficulty {
+  padding: 0.25rem 0.5rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.testProgress {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 250px;
+}
+
+.timer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  justify-content: flex-end;
+}
+
+.progressInfo {
+  width: 100%;
+}
+
+.progressText {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 0.25rem;
+}
+
+.progressBar {
+  width: 100%;
+  height: 6px;
+  background-color: #e5e7eb;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background-color: #6d28d9;
+  transition: width 0.2s;
+}
+
+.testMain {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+/* Test Question Component */
+.questionContainer {
+  background-color: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+}
+
+.questionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.questionTitle {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #1f2937;
+}
+
+.questionType {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  background-color: #f3f4f6;
+  border-radius: 1rem;
+  color: #6b7280;
+}
+
+.questionText {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  color: #1f2937;
+}
+
+.choices {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.choiceLabel {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.choiceLabel:hover {
+  background-color: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.choiceInput {
+  margin-right: 1rem;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.choiceText {
+  font-size: 1rem;
+  color: #1f2937;
+}
+
+.answerInputContainer {
+  margin-bottom: 2rem;
+}
+
+.answerTextarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.questionNavigation {
+  display: flex;
+  justify-content: space-between;
+}
+
+.navSpacer {
+  flex: 1;
+}
+
+.navButton {
+  padding: 0.75rem 1.5rem;
+  background-color: #f3f4f6;
+  border: none;
+  border-radius: 0.5rem;
+  color: #1f2937;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.navButton:hover {
+  background-color: #e5e7eb;
+}
+
+.submitButton {
+  background-color: #6d28d9;
+  color: white;
+}
+
+.submitButton:hover {
+  background-color: #5b21b6;
+}
+
+.testActions {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.submitTestButton {
+  padding: 0.875rem 2.5rem;
+  background-color: #6d28d9;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submitTestButton:hover:not(:disabled) {
+  background-color: #5b21b6;
+}
+
+.submitTestButton:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Results Page */
+.resultsMain {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.resultsTitle {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  color: #1f2937;
+}
+
+.resultsTabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.resultTab {
+  padding: 1rem 1.5rem;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #6b7280;
+  cursor: pointer;
+  transition: color 0.2s;
+  position: relative;
+}
+
+.resultTab:hover {
+  color: #1f2937;
+}
+
+.activeTab {
+  color: #6d28d9;
+  font-weight: 600;
+}
+
+.activeTab::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #6d28d9;
+}
+
+.resultsContent {
+  margin-bottom: 3rem;
+}
+
+/* Result Summary Component */
+.resultSummary {
+  margin-bottom: 3rem;
+}
+
+.scoreSection {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.scoreCard,
+.timeCard {
+  background-color: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.scoreTitle,
+.timeTitle {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  color: #1f2937;
+}
+
+.scoreValue {
+  font-size: 4rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+}
+
+.scoreDetail {
+  color: #6b7280;
+  font-size: 1.125rem;
+}
+
+.timeDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.timeStat {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.timeLabel {
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.timeValue {
+  color: #6b7280;
+}
+
+.recommendationsSection {
+  margin-bottom: 3rem;
+}
+
+.recommendationsTitle {
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+  color: #1f2937;
+  text-align: center;
+}
+
+.recommendationsList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.recommendationCard {
+  background-color: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.recommendationTitle {
+  font-size: 1.25rem;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #1f2937;
+}
+
+.recommendationText {
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+.resultsActions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.actionButton {
+  padding: 0.75rem 1.5rem;
+  background-color: #6d28d9;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  text-decoration: none;
+}
+
+.actionButton:hover {
+  background-color: #5b21b6;
+}
+
+.shareButton {
+  background-color: #1f2937;
+}
+
+.shareButton:hover {
+  background-color: #111827;
+}
+
+/* Question Review */
+.reviewTitle {
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+  color: #1f2937;
+}
+
+.reviewQuestion {
+  background-color: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border-left: 4px solid #d1d5db;
+}
+
+.correctQuestion {
+  border-left-color: #10b981;
+}
+
+.incorrectQuestion {
+  border-left-color: #ef4444;
+}
+
+.reviewHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.reviewQuestionTitle {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #1f2937;
+}
+
+.reviewStatus {
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.correctQuestion .reviewStatus {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+.incorrectQuestion .reviewStatus {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.reviewQuestionText {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  color: #1f2937;
+}
+
+.answerComparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.answerColumn {
+  flex: 1;
+}
+
+.answerTitle {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  color: #4b5563;
+}
+
+.answerBox {
+  background-color: #f9fafb;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  color: #1f2937;
+  min-height: 80px;
+}
+
+.noAnswer {
+  font-style: italic;
+  color: #9ca3af;
+}
+
+.explanation {
+  background-color: #f3f4f6;
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+.explanationTitle {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  color: #1f2937;
+}
+
+.explanationText {
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+/* Recommendations Tab */
+.recommendationsTab {
+  padding: 1.5rem;
+}
+
+.recommendationsIntro {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #6b7280;
+}
+
+.recommendationItem {
+  background-color: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border-left: 4px solid #6d28d9;
+}
+
+.recommendationItemTitle {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  color: #1f2937;
+}
+
+.recommendationItemText {
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+.nextStepsSection {
+  margin-top: 3rem;
+}
+
+.nextStepsTitle {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  color: #1f2937;
+}
+
+.nextStepsCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.nextStepCard {
+  background-color: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.nextStepCard h4 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  color: #1f2937;
+}
+
+.nextStepCard p {
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+}
+
+.nextStepButton {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background-color: #6d28d9;
+  color: white;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.nextStepButton:hover {
+  background-color: #5b21b6;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .scoreSection {
+    grid-template-columns: 1fr;
+  }
+
+  .answerComparison {
+    grid-template-columns: 1fr;
+  }
+
+  .resultsActions {
+    flex-direction: column;
+  }
+
+  .testHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .testProgress {
+    width: 100%;
+  }
+
+  .timer {
+    justify-content: flex-start;
+  }
+
+  .difficultySelectors {
+    flex-direction: column;
+  }
+}
+
+/* Next.js App Router Specific Styles */
+/* These help with the App Router specific considerations */
+
+/* For page wrapper */
+.pageWrapper {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Layout header if needed */
+.layoutHeader {
+  background-color: white;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 1rem;
+}
+
+/* Layout content */
+.layoutContent {
+  flex: 1;
+}
+
+/* For handling metadata placement in App Router */
+.metadataPlaceholder {
+  display: none;
+}
+
+/* Fix for layout issues with App Router */
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  flex: 1;
+}
+
+/* Fix for Next.js Link component in App Router */
+.link {
+  text-decoration: none;
+  color: inherit;
+}

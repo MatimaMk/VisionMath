@@ -53,11 +53,9 @@ export default function StudentDashboardLayout({
             },
 
             {
-              key: "/studentDash/QnAGenerator",
+              key: "/studentDash/mathTest",
               icon: <UploadOutlined />,
-              label: (
-                <Link href="/studentDash/qnaGenerator">AI QuestionsG</Link>
-              ),
+              label: <Link href="/studentDash/mathTest">AI QuestionsG</Link>,
             },
             {
               key: "/studentDash/imageAnalyzer",
@@ -65,9 +63,11 @@ export default function StudentDashboardLayout({
               label: <Link href="/studentDash/imageAnalyzer">VisionMath</Link>,
             },
             {
-              key: "/studentDash/progress",
+              key: "/studentDash/questionGenerator",
               icon: <UploadOutlined />,
-              label: <Link href="/studentDash/progress">Progress</Link>,
+              label: (
+                <Link href="studentDash/questionGenerator">Pdf Questions</Link>
+              ),
             },
           ]}
           onClick={({ key }) => router.push(key)}

@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         ...studentData,
         role: "STUDENT",
       });
-      console.log(response);
+
       dispatch(signUpSuccess(response.data));
     } catch (error) {
       dispatch(signUpError());
@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         payload,
         role: "EDUCATOR",
       });
-      console.log(response);
+
       dispatch(signUpEduSuccess(response.data));
       //message.success("Educator registration successful!");
     } catch (error) {
