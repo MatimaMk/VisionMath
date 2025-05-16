@@ -49,22 +49,7 @@ namespace visionMath.Web.Host.Startup
             services.AddSignalR();
 
             // Configure CORS for angular2 UI
-            services.AddCors(
-                options => options.AddPolicy(
-                    _defaultCorsPolicyName,
-                    builder => builder
-                        .WithOrigins(
-                            // App:CorsOrigins in appsettings.json can contain more than one address separated by comma.
-                            _appConfiguration["App:CorsOrigins"]
-                                .Split(",", StringSplitOptions.RemoveEmptyEntries)
-                                .Select(o => o.RemovePostFix("/"))
-                                .ToArray()
-                        )
-                        .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .AllowCredentials()
-                )
-            );
+            ConfigureCors(services);
 
             // Swagger - Enable this line and the related lines in Configure method to enable swagger UI
             ConfigureSwagger(services);
@@ -81,16 +66,81 @@ namespace visionMath.Web.Host.Startup
             );
         }
 
+        // Extracted CORS configuration to a separate method for clarity
+        private void ConfigureCors(IServiceCollection services)
+        {
+            // Get the CORS origins from configuration
+            var corsOrigins = _appConfiguration["App:CorsOrigins"]
+                .Split(",", StringSplitOptions.RemoveEmptyEntries)
+                .Select(o => o.RemovePostFix("/"))
+                .ToArray();
+
+            // Always ensure production URLs are included regardless of environment
+            if (_hostingEnvironment.IsProduction())
+            {
+                // Make sure our production URLs are always included
+                if (!corsOrigins.Contains("https://visionmath.vercel.app"))
+                {
+                    var corsOriginsList = corsOrigins.ToList();
+                    corsOriginsList.Add("https://visionmath.vercel.app");
+                    corsOrigins = corsOriginsList.ToArray();
+                }
+                
+                Console.WriteLine("Production environment detected. CORS Origins:");
+                foreach (var origin in corsOrigins)
+                {
+                    Console.WriteLine($"- {origin}");
+                }
+            }
+
+            services.AddCors(
+                options => options.AddPolicy(
+                    _defaultCorsPolicyName,
+                    builder => builder
+                        .WithOrigins(corsOrigins)
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials()
+                )
+            );
+        }
+
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             app.UseAbp(options => { options.UseAbpRequestLocalization = false; }); // Initializes ABP framework.
 
+            // Apply CORS before any middleware that might handle requests
             app.UseCors(_defaultCorsPolicyName); // Enable CORS!
 
-            app.UseStaticFiles();
-
+            // Handle preflight OPTIONS requests explicitly
             app.UseRouting();
 
+            // If in production, add explicit CORS headers for troubleshooting
+            if (env.IsProduction())
+            {
+                app.Use(async (context, next) =>
+                {
+                    // Log CORS information for debugging
+                    var origin = context.Request.Headers["Origin"].ToString();
+                    Console.WriteLine($"Request from Origin: {origin}");
+
+                    // Handle OPTIONS requests explicitly for CORS preflight
+                    if (context.Request.Method == "OPTIONS")
+                    {
+                        context.Response.Headers.Add("Access-Control-Allow-Origin", "https://visionmath.vercel.app");
+                        context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+                        context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization, X-XSRF-TOKEN");
+                        context.Response.Headers.Add("Access-Control-Allow-Credentials", "true");
+                        context.Response.StatusCode = 200;
+                        await context.Response.CompleteAsync();
+                        return;
+                    }
+
+                    await next();
+                });
+            }
+
+            app.UseStaticFiles();
             app.UseAuthentication();
             app.UseAuthorization();
 
