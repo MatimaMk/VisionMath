@@ -157,8 +157,6 @@ export const mathTestService = {
           .single();
 
         if (!minimalError && minimalResult) {
-          minimalResult;
-
           return { resultId: minimalResult.id };
         }
       } catch (err) {
@@ -253,8 +251,6 @@ export const mathTestService = {
 
       if (error) throw new Error(`Error retrieving result: ${error.message}`);
       if (!data) throw new Error("Result not found");
-
-      // Make sure the result is properly formatted
 
       return data as TestResult;
     } catch (err) {

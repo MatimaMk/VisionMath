@@ -12,16 +12,8 @@ export default function StudentTestsPage() {
 
   // Fetch all tests when the page loads
   useEffect(() => {
-\
     getAllTests();
   }, [getAllTests]);
-
-  // Log when tests are loaded
-  useEffect(() => {
-    if (tests) {
-   
-    }
-  }, [tests]);
 
   if (isPending && !tests) {
     return (

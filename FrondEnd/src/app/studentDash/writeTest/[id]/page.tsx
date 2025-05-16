@@ -35,7 +35,9 @@ export default function TakeTestPage() {
   let decodedId = rawId;
   try {
     decodedId = decodeURIComponent(rawId);
-  } catch (e) {}
+  } catch (e) {
+    console.error(e);
+  }
 
   // extracting just the UUID when it still contains "id=" or similar prefix,
   let testId = decodedId;
