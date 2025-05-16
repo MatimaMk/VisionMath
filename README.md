@@ -11,7 +11,9 @@ MathVision is an interactive mathematics education platform designed to help stu
 - **Performance Analytics**: View detailed insights about your strengths and areas for improvement
 - **Adaptive Learning Paths**: Receive custom recommendations based on your actual test performance
 
-## Detailed Installation Guide
+### Requirements Document Links
+- https://boxfusionint-my.sharepoint.com/:w:/r/personal/kabelo_matima_boxfusion_io/_layouts/15/doc2.aspx?sourcedoc=%7B164CB485-EE56-4F0D-B019-55E9B68D0ADE%7D&file=Document%205.docx&action=editnew&mobileredirect=true&wdNewAndOpenCt=1747435842446&ct=1747435844224&wdOrigin=OFFICECOM-WEB.START.NEW&wdPreviousSessionSrc=HarmonyWeb&wdPreviousSession=bdad0920-9ec1-4009-85c2-1f8e025e03a7&cid=57147c46-3d0b-4a03-abad-ec6bc0d6839c
+- https://lucid.app/lucidchart/25b591fb-3ccc-4de9-9e75-1aa196085735/edit?beaconFlowId=8F6359FE497C9223&invitationId=inv_355ddac2-2240-46b4-bd37-8f442e771910&page=G.igs1Epe9wf#
 
 ### Prerequisites
 
@@ -39,12 +41,6 @@ MathVision is an interactive mathematics education platform designed to help stu
   # Install Git on macOS
   brew install git
   
-  # For Windows, download from https://git-scm.com/download/win
-  ```
-
-- **Supabase Account**: Register at [supabase.com](https://supabase.com)
-
-- **Google AI API Access**: For Gemini AI integration
 
 ### Step 1: Clone the Repository
 
@@ -166,9 +162,7 @@ The dashboard displays:
 - **Backend**: Supabase (PostgreSQL, Authentication, Functions), C#, Abp, .Net 9
 - **AI Integration**: Google Gemini API
 - **Deployment**: Vercel and rendor for backend
-- 
-## Edge Functions for AI
-- https://supabase.com/dashboard/project/edaiyqrxctozonsclcqt/functions
+
        
 ## Contributing
 1. Fork the repository
