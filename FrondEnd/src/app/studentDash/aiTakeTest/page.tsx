@@ -141,7 +141,7 @@ function TestContent() {
       );
 
       // Router navigation
-      router.push(`/studentDash/aiResults?resultsId=${result.resultId}`);
+      router.push(`/studentDash/aiResults/${result.resultId}`);
     } catch (err: unknown) {
       console.error("Error submitting test:", err);
       setSubmitting(false);

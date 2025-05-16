@@ -1,19 +1,22 @@
 import Head from "next/head";
 import Link from "next/link";
-import styles from "../../../components/aiTestGenerator/styles/mathTest.module.css";
-import TestResultsClient from "../../../components/aiTestGenerator/TestResultsClient";
-import { mathTestService } from "../../../components/aiServices/mathTestService";
+import styles from "@/components/aiTestGenerator/styles/mathTest.module.css";
+import TestResultsClient from "../../../../components/aiTestGenerator/TestResultsClient";
+import { mathTestService } from "../../../../components/aiServices/mathTestService";
 
 type PageProps = {
-  params: Promise<{ id: string }>;
+  params: {
+    resultId: string;
+  };
 };
 
 export default async function TestResultsPage({ params }: PageProps) {
-  const { id } = await params;
+  console.log("params", params.resultId);
+  console.log("params", params);
 
   let result;
   try {
-    result = await mathTestService.getTestResult(id);
+    result = await mathTestService.getTestResult(params?.resultId);
   } catch (error) {
     console.error("Error fetching test result:", error);
 
@@ -23,9 +26,8 @@ export default async function TestResultsPage({ params }: PageProps) {
         <p className={styles.errorMessage}>
           Failed to load test results. Please try again.
         </p>
-        <Link href="/math-tests">
-          {/* `a` tag is optional with next/link in Next.js 13+ */}
-          <a className={styles.returnButton}>Return to Math Tests</a>
+        <Link href="/math-tests" className={styles.returnButton}>
+          Return to Math Tests
         </Link>
       </div>
     );
@@ -35,8 +37,8 @@ export default async function TestResultsPage({ params }: PageProps) {
     return (
       <div className={styles.errorContainer}>
         <h2>No test results found</h2>
-        <Link href="/math-tests">
-          <a className={styles.returnButton}>Return to Math Tests</a>
+        <Link href="/math-tests" className={styles.returnButton}>
+          Return to Math Tests
         </Link>
       </div>
     );

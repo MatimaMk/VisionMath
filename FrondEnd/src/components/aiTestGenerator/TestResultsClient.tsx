@@ -133,8 +133,8 @@ export default function TestResultsClient({ result }: Props) {
                     Try a different topic or difficulty level to expand your
                     skills.
                   </p>
-                  <Link href="/math-tests">
-                    <a className={styles.nextStepButton}>New Test</a>
+                  <Link href="/math-tests" className={styles.nextStepButton}>
+                    New Test
                   </Link>
                 </div>
 
