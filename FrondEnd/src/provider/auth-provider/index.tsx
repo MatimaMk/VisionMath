@@ -64,7 +64,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     SignInRequest: ISignInRequest
   ): Promise<ISignInResponse> => {
     dispatch(signInPending());
-    const endpoint = "https://localhost:44311/api/TokenAuth/Authenticate";
+    const endpoint =
+      "https://visionmath-1.onrender.com/api/TokenAuth/Authenticate";
 
     return axios
       .post(endpoint, SignInRequest)
@@ -87,10 +88,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         throw error;
       });
   };
+  const logout = async (): Promise<void> => {
+    sessionStorage.removeItem("jwt");
+
+    window.location.href = "/login";
+    return Promise.resolve();
+  };
 
   return (
     <AuthStateContext.Provider value={state}>
-      <AuthActionContext.Provider value={{ signUp, signIn, signUpEdu }}>
+      <AuthActionContext.Provider value={{ signUp, signIn, signUpEdu, logout }}>
         {children}
       </AuthActionContext.Provider>
     </AuthStateContext.Provider>

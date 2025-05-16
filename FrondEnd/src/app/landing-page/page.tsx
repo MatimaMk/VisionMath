@@ -20,7 +20,12 @@ const VisionMathLanding: React.FC = () => {
           <div className={styles.menuItem}>For Educators</div>
         </nav>
         <div className={styles.headerButtons}>
-          <button className={styles.textButton}>Log In</button>
+          <button
+            className={styles.textButton}
+            onClick={() => router.push("/login")}
+          >
+            Log In
+          </button>
           <button
             className={styles.primaryButton}
             onClick={() => router.push("/signUp")}

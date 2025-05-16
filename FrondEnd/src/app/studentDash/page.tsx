@@ -1,5 +1,4 @@
 "use client";
-
 import { useUserState, useUserActions } from "@/provider/users-provider";
 import {
   Card,
@@ -21,7 +20,9 @@ import {
   ExperimentOutlined,
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
-import styles from "../educator-dashboard/styles/welcome.module.css";
+import styles from "@/app/educator-dashboard/styles/welcome.module.css";
+import { mathTestService } from "@/components/aiServices/mathTestService";
+import { TestResult } from "@/app/interfaces/mathTestTypes";
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -29,6 +30,15 @@ function WelcomePage() {
   const { currentUser } = useUserState();
   const { getCurrentUser } = useUserActions();
   const [hasFetched, setHasFetched] = useState(false);
+  const [testHistory, setTestHistory] = useState<TestResult[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({
+    completedTests: 0,
+    averageScore: 0,
+    highestScore: 0,
+    currentStreak: 0,
+    totalTimeSpent: 0,
+  });
 
   useEffect(() => {
     const token = sessionStorage.getItem("jwt");
@@ -37,6 +47,73 @@ function WelcomePage() {
       getCurrentUser(token);
     }
   }, [hasFetched, getCurrentUser]);
+
+  // Load test history and calculate stats
+  useEffect(() => {
+    async function loadTestData() {
+      try {
+        setLoading(true);
+        const history = await mathTestService.getTestHistory();
+        setTestHistory(history);
+
+        // Calculate stats from test history
+        if (history.length > 0) {
+          // Completed tests count
+          const completedTests = history.length;
+
+          // Average score
+          const totalScore = history.reduce((sum, test) => sum + test.score, 0);
+          const averageScore = Math.round(totalScore / completedTests);
+
+          // Highest score
+          const highestScore = Math.max(...history.map((test) => test.score));
+
+          // Total time spent (in minutes)
+          const totalTimeSpent = Math.round(
+            history.reduce(
+              (sum, test) => sum + (test.time_in_seconds || 0),
+              0
+            ) / 60
+          );
+
+          // Calculate streak (consecutive days with completed tests)
+          // This is a simplified version that counts recent consecutive tests
+          let currentStreak = 0;
+          const sortedTests = [...history].sort(
+            (a, b) =>
+              new Date(b.completed_at || "").getTime() -
+              new Date(a.completed_at || "").getTime()
+          );
+
+          if (sortedTests.length > 0) {
+            currentStreak = 1;
+
+            for (let i = 1; i < Math.min(sortedTests.length, 7); i++) {
+              if (sortedTests[i].completed_at) {
+                currentStreak++;
+              } else {
+                break;
+              }
+            }
+          }
+
+          setStats({
+            completedTests,
+            averageScore,
+            highestScore,
+            currentStreak,
+            totalTimeSpent,
+          });
+        }
+      } catch (error) {
+        console.error("Error loading test history:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadTestData();
+  }, []);
 
   // Sample math categories
   const mathCategories = [
@@ -62,7 +139,57 @@ function WelcomePage() {
     },
   ];
 
-  if (!hasFetched || !currentUser) {
+  // Get recent test topics for recommendations
+  const getRecentTopics = () => {
+    if (testHistory.length === 0)
+      return [
+        { title: "Differential Equations", progress: 30 },
+        { title: "Linear Algebra", progress: 15 },
+        { title: "Probability Theory", progress: 0 },
+      ];
+
+    // Extract unique topics from test history
+    const topicsWithScores = testHistory
+      .filter((test) => test.math_tests?.topic)
+      .map((test) => ({
+        title: test.math_tests?.topic || "",
+        score: test.score,
+        difficulty: test.math_tests?.difficulty,
+      }));
+
+    // Group by topic and calculate average score (as progress)
+    const topicProgress = new Map();
+    topicsWithScores.forEach((item) => {
+      if (!topicProgress.has(item.title)) {
+        topicProgress.set(item.title, {
+          totalScore: item.score,
+          count: 1,
+          difficulty: item.difficulty,
+        });
+      } else {
+        const current = topicProgress.get(item.title);
+        topicProgress.set(item.title, {
+          totalScore: current.totalScore + item.score,
+          count: current.count + 1,
+          difficulty: current.difficulty || item.difficulty,
+        });
+      }
+    });
+
+    // Convert to array and calculate progress
+    return Array.from(topicProgress.entries())
+      .map(([title, data]) => ({
+        title,
+        progress: Math.round(data.totalScore / data.count),
+        difficulty: data.difficulty,
+      }))
+      .sort((a, b) => b.progress - a.progress)
+      .slice(0, 3); // Take top 3
+  };
+
+  const recommendedTopics = getRecentTopics();
+
+  if (!hasFetched || !currentUser || loading) {
     // Still fetching, show skeleton
     return (
       <div className={styles.skeletonContainer}>
@@ -75,6 +202,18 @@ function WelcomePage() {
 
   return (
     <div className={styles.container}>
+      {/* <GeminiChat
+        currentUser={{ ...currentUser, id: currentUser.id?.toString() }}
+        recommendedTopics={recommendedTopics.map((topic) => topic.title)}
+        completedLessons={testHistory.length}
+        mathProgress={stats.averageScore}
+        mathCategories={mathCategories.map((category) => ({
+          ...category,
+          progress: 0, // Default progress value
+        }))}
+        currentStreak={stats.currentStreak}
+        mathScore={stats.highestScore} *
+      /> */}
       <Row gutter={[24, 24]} className={styles.welcomeSection}>
         <Col xs={24} lg={16}>
           <Card bordered={false} className={styles.welcomeCard}>
@@ -99,22 +238,23 @@ function WelcomePage() {
 
             <Space size="large" className={styles.statsContainer}>
               <Statistic
-                title="Completed Lessons"
-                value={12}
+                title="Completed Tests"
+                value={stats.completedTests}
                 prefix={<BookOutlined />}
                 className={styles.stat}
               />
               <Statistic
                 title="Current Streak"
-                value={5}
+                value={stats.currentStreak}
                 suffix="days"
                 prefix={<TrophyOutlined />}
                 className={styles.stat}
               />
               <Statistic
-                title="Math Score"
-                value={850}
+                title="Average Score"
+                value={stats.averageScore}
                 prefix={<RiseOutlined />}
+                suffix="%"
                 className={styles.stat}
               />
             </Space>
@@ -124,14 +264,16 @@ function WelcomePage() {
                 type="primary"
                 size="large"
                 className={styles.continueButton}
+                href="/studentDash/mathTest"
               >
-                Continue Learning
+                Take New Test
               </Button>
               <Button
                 size="large"
                 style={{ borderColor: "#20B2AA", color: "#20B2AA" }}
+                href="/studentDash/aiResults"
               >
-                Practice Problems
+                View Results
               </Button>
             </div>
           </Card>
@@ -155,16 +297,20 @@ function WelcomePage() {
 
             <div className={styles.profileStats}>
               <div className={styles.profileStat}>
-                <Text strong>Learning Level</Text>
-                <Text>Intermediate</Text>
+                <Text strong>Highest Score</Text>
+                <Text>{stats.highestScore}%</Text>
               </div>
               <div className={styles.profileStat}>
                 <Text strong>Last Active</Text>
-                <Text>Today</Text>
+                <Text>
+                  {testHistory.length > 0 && testHistory[0].completed_at
+                    ? new Date(testHistory[0].completed_at).toLocaleDateString()
+                    : "Today"}
+                </Text>
               </div>
               <div className={styles.profileStat}>
-                <Text strong>Math Points</Text>
-                <Text>1,240</Text>
+                <Text strong>Time Spent</Text>
+                <Text>{stats.totalTimeSpent} minutes</Text>
               </div>
             </div>
 
@@ -189,7 +335,11 @@ function WelcomePage() {
                 <Paragraph className={styles.categoryDescription}>
                   {category.description}
                 </Paragraph>
-                <Button type="link" className={styles.exploreButton}>
+                <Button
+                  type="link"
+                  className={styles.exploreButton}
+                  href={`/studentDash/mathTest`}
+                >
                   Explore
                 </Button>
               </div>
@@ -206,51 +356,31 @@ function WelcomePage() {
               Based on your learning progress, we suggest these topics:
             </Paragraph>
             <Row gutter={[16, 16]}>
-              <Col xs={24} md={8}>
-                <Card className={styles.recTopicCard}>
-                  <Title level={5}>Differential Equations</Title>
-                  <div className={styles.progressBar}>
-                    <div
-                      className={styles.progressFill}
-                      style={{ width: "30%" }}
-                    ></div>
-                    <span className={styles.progressText}>30%</span>
-                  </div>
-                  <Button type="primary" block>
-                    Continue
-                  </Button>
-                </Card>
-              </Col>
-              <Col xs={24} md={8}>
-                <Card className={styles.recTopicCard}>
-                  <Title level={5}>Linear Algebra</Title>
-                  <div className={styles.progressBar}>
-                    <div
-                      className={styles.progressFill}
-                      style={{ width: "15%" }}
-                    ></div>
-                    <span className={styles.progressText}>15%</span>
-                  </div>
-                  <Button type="primary" block>
-                    Start Learning
-                  </Button>
-                </Card>
-              </Col>
-              <Col xs={24} md={8}>
-                <Card className={styles.recTopicCard}>
-                  <Title level={5}>Probability Theory</Title>
-                  <div className={styles.progressBar}>
-                    <div
-                      className={styles.progressFill}
-                      style={{ width: "0%" }}
-                    ></div>
-                    <span className={styles.progressText}>0%</span>
-                  </div>
-                  <Button type="primary" block>
-                    Explore
-                  </Button>
-                </Card>
-              </Col>
+              {recommendedTopics.map((topic, index) => (
+                <Col xs={24} md={8} key={index}>
+                  <Card className={styles.recTopicCard}>
+                    <Title level={5}>{topic.title}</Title>
+                    <div className={styles.progressBar}>
+                      <div
+                        className={styles.progressFill}
+                        style={{ width: `${topic.progress}%` }}
+                      ></div>
+                      <span className={styles.progressText}>
+                        {topic.progress}%
+                      </span>
+                    </div>
+                    <Button
+                      type="primary"
+                      block
+                      href={`/studentDash/aiTestGenerator?topic=${topic.title.toLowerCase()}&difficulty=${
+                        topic.title
+                      }`}
+                    >
+                      {topic.progress > 0 ? "Continue" : "Start Learning"}
+                    </Button>
+                  </Card>
+                </Col>
+              ))}
             </Row>
           </Card>
         </Col>
