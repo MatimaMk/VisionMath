@@ -141,10 +141,6 @@ const Home: NextPage = () => {
           </div>
         )}
       </main>
-
-      <footer className={styles.footer}>
-        <p>Powered by Next.js, TypeScript, and Google Gemini AI</p>
-      </footer>
     </div>
   );
 };

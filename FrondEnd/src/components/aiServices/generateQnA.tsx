@@ -13,7 +13,7 @@ export const config = {
   },
 };
 
-const apiKey = "YOUR_GEMINI_API_KEY";
+const apiKey = "AIzaSyCoXN7igeh_bDJ5k6B-Hw0JvzU5yTRjTHIs";
 const genAI = new GoogleGenerativeAI(apiKey);
 
 export function parseForm(

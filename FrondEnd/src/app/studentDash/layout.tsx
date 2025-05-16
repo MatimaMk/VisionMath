@@ -1,16 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
 import {
+  LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   UploadOutlined,
-  UserOutlined,
   VideoCameraOutlined,
 } from "@ant-design/icons";
 import { Button, Layout, Menu, theme } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+import { useAuthActions } from "../../provider/auth-provider";
 
 const { Header, Sider, Content } = Layout;
 
@@ -21,6 +22,7 @@ export default function StudentDashboardLayout({
 }>) {
   const [collapsed, setCollapsed] = useState(false);
   const router = useRouter();
+  const { logout } = useAuthActions();
 
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -38,18 +40,7 @@ export default function StudentDashboardLayout({
             {
               key: "/studentDash",
               icon: <VideoCameraOutlined />,
-              label: "Student",
-            },
-            {
-              key: "/studentDas",
-              icon: <UserOutlined />,
-              label: <Link href="/studentDash/imageAnalyzer">Content</Link>,
-            },
-
-            {
-              key: "/studentDash/viewTest",
-              icon: <UploadOutlined />,
-              label: <Link href="/studentDash/ViewTest">Tests</Link>,
+              label: "DashBoard",
             },
 
             {
@@ -74,7 +65,14 @@ export default function StudentDashboardLayout({
         />
       </Sider>
       <Layout>
-        <Header style={{ padding: 0, background: colorBgContainer }}>
+        <Header
+          style={{
+            padding: 0,
+            background: colorBgContainer,
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
           <Button
             type="text"
             icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
@@ -85,6 +83,18 @@ export default function StudentDashboardLayout({
               height: 64,
             }}
           />
+          {/* Logout button in the corner */}
+          <Button
+            type="text"
+            icon={<LogoutOutlined />}
+            onClick={logout}
+            style={{
+              fontSize: "16px",
+              marginRight: "16px",
+            }}
+          >
+            Logout
+          </Button>
         </Header>
         <Content
           style={{

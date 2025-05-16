@@ -52,7 +52,6 @@ export const mathTestService = {
         throw new Error(`Error saving test: ${insertError.message}`);
       if (!testData) throw new Error("Failed to retrieve saved test data");
 
-      // Return client-safe version (no answers)
       const clientQuestions: ClientMathQuestion[] = data.questions.map(
         (q: MathQuestion) => ({
           id: q.id,
@@ -81,10 +80,8 @@ export const mathTestService = {
     timeInSeconds: number
   ): Promise<{ resultId: string }> {
     try {
-      // Use the specific user ID provided
       const specificUserId = "f6593f95-ead6-43b0-9164-fa135f4d98c4";
 
-      // Get the original test with answers
       const { data: test, error: testError } = await supabase
         .from("math_tests")
         .select("*")
@@ -95,28 +92,46 @@ export const mathTestService = {
         throw new Error(`Error retrieving test: ${testError.message}`);
       if (!test) throw new Error("Test not found");
 
-      // Grade the questions
-      const gradedQuestions = test.questions.map((question: GradedQuestion) => {
+      const gradedQuestions = test.questions.map((question: MathQuestion) => {
         const questionId = question.id;
         const userAnswer = answers[questionId] || "";
         let isCorrect = false;
 
+        const safeCompare = (
+          a: string | AnswersMap,
+          b: string | AnswersMap
+        ): boolean => {
+          const strA =
+            typeof a === "string" ? a.trim() : String(a || "").trim();
+          const strB =
+            typeof b === "string" ? b.trim() : String(b || "").trim();
+
+          return strA.toLowerCase() === strB.toLowerCase();
+        };
+
         if (question.type === "multiple_choice") {
-          isCorrect = userAnswer.trim() === question.correctAnswer.trim();
+          isCorrect = safeCompare(userAnswer, question.correctAnswer);
         } else {
-          isCorrect =
-            userAnswer.trim().toLowerCase() ===
-            question.correctAnswer.trim().toLowerCase();
+          isCorrect = safeCompare(userAnswer, question.correctAnswer);
         }
 
+        // Create graded question with proper formatting
         return {
           id: questionId,
-          text: question.text,
-          type: question.type,
-          userAnswer,
-          correctAnswer: question.correctAnswer,
+          text: question.text || "",
+          type: question.type || "open_ended",
+          userAnswer:
+            typeof userAnswer === "string"
+              ? userAnswer
+              : String(userAnswer || ""),
+          correctAnswer:
+            typeof question.correctAnswer === "string"
+              ? question.correctAnswer
+              : String(question.correctAnswer || ""),
           isCorrect,
           explanation: question.explanation || "",
+          // Include options if present
+          ...(question.options ? { options: question.options } : {}),
         };
       });
 
@@ -143,7 +158,6 @@ export const mathTestService = {
         },
       ];
 
-      // Try with minimal fields first
       try {
         const { data: minimalResult, error: minimalError } = await supabase
           .from("math_test_results")
@@ -160,10 +174,9 @@ export const mathTestService = {
           return { resultId: minimalResult.id };
         }
       } catch (err) {
-        console.error("Error with minimal insert:", err);
+        console.error(err);
       }
 
-      // Try with questions included
       try {
         const { data: withQuestionsResult, error: withQuestionsError } =
           await supabase
@@ -182,10 +195,9 @@ export const mathTestService = {
           return { resultId: withQuestionsResult.id };
         }
       } catch (err) {
-        console.error("Error with questions insert:", err);
+        console.error(err);
       }
 
-      // Try with everything
       try {
         const { data: fullResult, error: fullError } = await supabase
           .from("math_test_results")
@@ -204,10 +216,9 @@ export const mathTestService = {
           return { resultId: fullResult.id };
         }
       } catch (err) {
-        console.error("Error with full insert:", err);
+        console.error(err);
       }
 
-      // Last attempt with stringified JSON
       try {
         const { data: jsonResult, error: jsonError } = await supabase
           .from("math_test_results")
@@ -226,22 +237,27 @@ export const mathTestService = {
           return { resultId: jsonResult.id };
         }
 
-        // If we've reached this point, all attempts have failed
         throw new Error(`Could not submit test results: ${jsonError?.message}`);
       } catch (err) {
-        console.error("All insertion attempts failed:", err);
         throw new Error(
           `Failed to submit test results: ${(err as Error).message}`
         );
       }
     } catch (err) {
-      console.error("Error in submitTest:", err);
       throw err;
     }
   },
 
   async getTestResult(resultId: string): Promise<TestResult> {
     try {
+      if (!resultId || resultId === "undefined") {
+        console.error("Invalid resultId provided:", resultId);
+        throw new Error("Invalid result ID provided");
+      }
+
+      // Log the resultId for debugging
+      console.log("Fetching test result with ID:", resultId);
+
       // Get the test result and join with the math_tests table
       const { data, error } = await supabase
         .from("math_test_results")
@@ -249,10 +265,32 @@ export const mathTestService = {
         .eq("id", resultId)
         .single();
 
-      if (error) throw new Error(`Error retrieving result: ${error.message}`);
-      if (!data) throw new Error("Result not found");
+      if (error) {
+        console.error("Supabase error:", error);
+        throw new Error(`Error retrieving result: ${error.message}`);
+      }
 
-      return data as TestResult;
+      if (!data) {
+        console.error("Result not found for ID:", resultId);
+        throw new Error("Result not found");
+      }
+
+      // Ensure proper formatting of data
+      const formattedResult: TestResult = {
+        ...data,
+        questions: Array.isArray(data.questions)
+          ? data.questions
+          : typeof data.questions === "string"
+          ? JSON.parse(data.questions)
+          : [],
+        recommendations: Array.isArray(data.recommendations)
+          ? data.recommendations
+          : typeof data.recommendations === "string"
+          ? JSON.parse(data.recommendations)
+          : [],
+      };
+
+      return formattedResult;
     } catch (err) {
       console.error("Error in getTestResult:", err);
       throw err;

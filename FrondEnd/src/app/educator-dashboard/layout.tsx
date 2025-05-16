@@ -1,25 +1,32 @@
 "use client";
+
 import React, { useState } from "react";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  UploadOutlined,
+  DashboardOutlined,
+  RobotOutlined,
+  CalculatorOutlined,
+  FileTextOutlined,
+  LogoutOutlined,
   UserOutlined,
-  VideoCameraOutlined,
 } from "@ant-design/icons";
 import { Button, Layout, Menu, theme } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useAuthActions } from "../../provider/auth-provider";
 
 const { Header, Sider, Content } = Layout;
 
-export default function DashboardLayout({
+export default function StudentDashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   const [collapsed, setCollapsed] = useState(false);
   const router = useRouter();
+  const { logout } = useAuthActions(); // Access logout function
+
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -34,30 +41,30 @@ export default function DashboardLayout({
           defaultSelectedKeys={["1"]}
           items={[
             {
-              key: "/educator-dashboard",
+              key: "/studentDash",
+              icon: <DashboardOutlined />,
+              label: "Dashboard",
+            },
+            {
+              key: "/studentDash/viewTest",
               icon: <UserOutlined />,
-              label: "Student",
+              label: <Link href="/studentDash/ViewTest">Tests</Link>,
             },
             {
-              key: "/educator-dashboard/topic",
-              icon: <VideoCameraOutlined />,
-              label: <Link href="/educator-dashboard/topic">Topics</Link>,
+              key: "/studentDash/mathTest",
+              icon: <RobotOutlined />,
+              label: <Link href="/studentDash/mathTest">AI Test</Link>,
             },
             {
-              key: "/educator-dashboard/content",
-              icon: <UploadOutlined />,
-              label: <Link href="/educator-dashboard/content">Content</Link>,
+              key: "/studentDash/imageAnalyzer",
+              icon: <CalculatorOutlined />,
+              label: <Link href="/studentDash/imageAnalyzer">VisionMath</Link>,
             },
             {
-              key: "/educator-dashboard/test",
-              icon: <UploadOutlined />,
-              label: <Link href="/educator-dashboard/test">Test</Link>,
-            },
-            {
-              key: "/educator-dashboard/createTest",
-              icon: <UploadOutlined />,
+              key: "/studentDash/questionGenerator",
+              icon: <FileTextOutlined />,
               label: (
-                <Link href="/educator-dashboard/createTest">Create Test</Link>
+                <Link href="studentDash/questionGenerator">Pdf Questions</Link>
               ),
             },
           ]}
@@ -65,7 +72,14 @@ export default function DashboardLayout({
         />
       </Sider>
       <Layout>
-        <Header style={{ padding: 0, background: colorBgContainer }}>
+        <Header
+          style={{
+            padding: 0,
+            background: colorBgContainer,
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
           <Button
             type="text"
             icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
@@ -76,6 +90,18 @@ export default function DashboardLayout({
               height: 64,
             }}
           />
+          {/* Logout button in the corner */}
+          <Button
+            type="text"
+            icon={<LogoutOutlined />}
+            onClick={logout}
+            style={{
+              fontSize: "16px",
+              marginRight: "16px",
+            }}
+          >
+            Logout
+          </Button>
         </Header>
         <Content
           style={{

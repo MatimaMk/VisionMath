@@ -163,7 +163,7 @@ export default function LoginForm({
                   style={{ width: "100%", maxWidth: "300px", margin: "0 auto" }}
                 >
                   <img
-                    src="https://framerusercontent.com/images/OkqH0Xja9Kp5AZHSzl6ifosx70c.png"
+                    src="https://img.freepik.com/premium-photo/charming-back-school-background-with-vintage-chalkboard-showcasing-handwritten-notes-equations-different-subjects_372999-20779.jpg?w=2000"
                     alt="Mathematics Learning Illustration"
                     style={{ width: "100%", objectFit: "contain" }}
                   />
@@ -283,6 +283,7 @@ export default function LoginForm({
                 <a
                   href="/register"
                   style={{ color: "#4ade80", fontWeight: "bold" }}
+                  onClick={() => router.push("/signUp")}
                 >
                   Sign up
                 </a>

@@ -54,6 +54,7 @@ export interface IAuthActionContext {
   signIn: (SignInRequest: ISignInRequest) => Promise<ISignInResponse>;
   signUp: (studentData: ICreateStudent) => Promise<void>;
   signUpEdu: (educatorData: ICreateEducator) => Promise<void>;
+  logout: () => Promise<void>;
 }
 
 // Initial state with default values
