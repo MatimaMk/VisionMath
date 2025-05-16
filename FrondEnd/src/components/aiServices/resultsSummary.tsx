@@ -83,8 +83,8 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({ result }) => {
       </div>
 
       <div className={styles.resultsActions}>
-        <Link href="studentDash/mathTest">
-          <a className={styles.actionButton}>Take Another Test</a>
+        <Link href="studentDash/mathTest" className={styles.actionButton}>
+          Take Another Test
         </Link>
         <button
           className={`${styles.actionButton} ${styles.shareButton}`}

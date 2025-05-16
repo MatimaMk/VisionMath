@@ -133,8 +133,8 @@ export default function TestResultsClient({ result }: Props) {
                     Try a different topic or difficulty level to expand your
                     skills.
                   </p>
-                  <Link href="/math-tests">
-                    <a className={styles.nextStepButton}>New Test</a>
+                  <Link href="/math-tests" className={styles.nextStepButton}>
+                    New Test
                   </Link>
                 </div>
 
@@ -144,13 +144,6 @@ export default function TestResultsClient({ result }: Props) {
                     Strengthen your understanding with more practice in{" "}
                     {result.math_tests?.topic || result.topic || "this topic"}.
                   </p>
-                  <Link
-                    href={`/math-tests?topic=${
-                      result.math_tests?.topic || result.topic || ""
-                    }`}
-                  >
-                    <a className={styles.nextStepButton}>Practice More</a>
-                  </Link>
                 </div>
               </div>
             </div>
